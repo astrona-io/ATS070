@@ -1,25 +1,21 @@
-# Curriculum And Authoring Plan
+# Curriculum Coverage
 
 Exam: Certified Backstage Associate (CBA). Domain: Backstage Infrastructure (22%).
-Source: [official curriculum](https://training.linuxfoundation.org/certification/certified-backstage-associate-cba/), checked 2026-10-10.
-Objectives are attributed to The Linux Foundation and CNCF.
 
-Preparation scaffold; content authoring has not started.
+The [official objectives](https://training.linuxfoundation.org/certification/certified-backstage-associate-cba/) were checked on 2026-10-11. Teaching structure is independently authored and does not add official requirements.
 
-| Section | Official objective | Authoring status |
+| Section | Official objective | Modules |
 | --- | --- | --- |
-| 010 | Understand the Backstage framework | Planned |
-| 020 | Configure Backstage | Planned |
-| 030 | Deploy Backstage to production | Planned |
-| 040 | Understand Backstage client-server architecture | Planned |
+| 010 | Understand the Backstage framework | 1 |
+| 020 | Configure Backstage | 1 |
+| 030 | Deploy Backstage to production | 1 |
+| 040 | Understand Backstage client-server architecture | 1 |
 
-Before building content:
+| Section / module | Module | Teaching files |
+| --- | --- | --- |
+| 010 / 01 | Framework Features, Integrations And Application Ownership | Framework Features, Integrations And Application Ownership |
+| 020 / 01 | Effective Configuration, Visibility And Secret Boundaries | Effective Configuration, Visibility And Secret Boundaries |
+| 030 / 01 | Production Deployment, Persistence And Operational Boundaries | Production Deployment, Persistence And Operational Boundaries |
+| 040 / 01 | Browser APIs, Backend Routes And Trust Boundaries | Browser APIs, Backend Routes And Trust Boundaries |
 
-- Recheck the curriculum and refine broad objectives into teachable modules.
-- Choose and record the environment versions and any image dependencies.
-- Write the introduction and remove placeholder notices only when it is ready.
-- Build short parts and runnable playgrounds; add graded labs where appropriate.
-- Add quizzes and a capstone when the completed domain needs them.
-- Check real outputs and reference solutions, and update `astrona.yaml`.
-- Remove `draft: true` from completed technical pages after review.
-- Publish the course only after the maintainer approves the completed content.
+AUTHORING.yaml records measurable goals and adaptation sources. Every objective retains its section ID. All technical readings remain draft. Question banks are separate from the reading manifest and follow their declared summaries. No labs, playgrounds or runtime validation are included.

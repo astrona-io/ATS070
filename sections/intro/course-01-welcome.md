@@ -1,7 +1,9 @@
 # Welcome To The Course
 
-This course is being prepared for the Backstage Infrastructure domain of the
-Certified Backstage Associate (CBA) exam.
+This course develops the official Backstage Infrastructure objectives for Certified Backstage Associate (CBA). The certification uses a multiple-choice examination. The course is independently authored reading material and does not claim to simulate the examination.
 
-Lessons and exercises are planned. The finished welcome will explain the
-audience, terminology, example application and reading order.
+Each section starts with its own introduction and learning outcomes. Each module provides goals, developed teaching and a final summary. Lesson counts follow the subject rather than a fixed number.
+
+YAML knowledge checks are registered separately for future presentation. They follow the relevant summaries and include original questions and answer feedback. Technical pages remain draft for review.
+
+Read the explanations and worked examples to identify the responsible component, intended operation and limits of each claim. No live environment or executed results are required.

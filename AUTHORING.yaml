@@ -1,0 +1,99 @@
+version: 1
+approval: CBA requested 2026-10-11; established reading-only scope
+course:
+  id: ATS070
+  certification:
+    name: Certified Backstage Associate
+    code: CBA
+    provider: CNCF / Linux Foundation
+    domain: Backstage Infrastructure
+    weight: 22
+    competencies:
+    - Understand the Backstage framework
+    - Configure Backstage
+    - Deploy Backstage to production
+    - Understand Backstage client-server architecture
+defaults:
+  playground: false
+  module_lab: false
+  capstone: false
+  section_quiz: false
+  final_quiz: true
+assessment_format: YAML question banks v1, registered in assessments/index.yaml
+sections:
+- id: section-010
+  title: Understand the Backstage framework
+  curriculum_item: Understand the Backstage framework
+  capstone: false
+  section_quiz: false
+  modules:
+  - id: module-01
+    title: Framework Features, Integrations And Application Ownership
+    objectives:
+    - Explain Backstage as an assembled developer portal framework.
+    - Distinguish catalog, templates and documentation responsibilities.
+    - Identify what remains the responsibility of the adopting organization.
+    outline:
+    - Framework Features, Integrations And Application Ownership
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-010/module-01/course-01-framework-features-integrations-and-application-ownership.md
+      adapted_from: null
+- id: section-020
+  title: Configure Backstage
+  curriculum_item: Configure Backstage
+  capstone: false
+  section_quiz: false
+  modules:
+  - id: module-01
+    title: Effective Configuration, Visibility And Secret Boundaries
+    objectives:
+    - Explain configuration merging and typed consumption.
+    - Distinguish browser-visible settings from backend-only values.
+    - Reason about overrides, arrays and environment-dependent configuration.
+    outline:
+    - Effective Configuration, Visibility And Secret Boundaries
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-020/module-01/course-01-effective-configuration-visibility-and-secret-boundaries.md
+      adapted_from: null
+- id: section-030
+  title: Deploy Backstage to production
+  curriculum_item: Deploy Backstage to production
+  capstone: false
+  section_quiz: false
+  modules:
+  - id: module-01
+    title: Production Deployment, Persistence And Operational Boundaries
+    objectives:
+    - Identify the application, database and integration dependencies of a deployment.
+    - Distinguish availability, readiness and functional feature health.
+    - Explain safe release, secret delivery and persistent-data responsibilities.
+    outline:
+    - Production Deployment, Persistence And Operational Boundaries
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-030/module-01/course-01-production-deployment-persistence-and-operational-boundaries.md
+      adapted_from: null
+- id: section-040
+  title: Understand Backstage client-server architecture
+  curriculum_item: Understand Backstage client-server architecture
+  capstone: false
+  section_quiz: false
+  modules:
+  - id: module-01
+    title: Browser APIs, Backend Routes And Trust Boundaries
+    objectives:
+    - Trace a browser feature through its client API and backend route.
+    - Distinguish discovery, authentication and authorization responsibilities.
+    - Explain why privileged integrations belong behind server boundaries.
+    outline:
+    - Browser APIs, Backend Routes And Trust Boundaries
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-040/module-01/course-01-browser-apis-backend-routes-and-trust-boundaries.md
+      adapted_from: null
