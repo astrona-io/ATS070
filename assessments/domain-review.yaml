@@ -1,0 +1,243 @@
+schema_version: 1
+kind: question_bank
+id: ats070-domain-review
+course_id: ATS070
+exam_code: CBA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: domain
+  id: domain-review
+  title: Backstage Infrastructure
+placement:
+  position: after
+  reading: sections/section-040/module-01/course-02-summary.md
+questions:
+- id: ats070-domain-review-q01
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain Backstage as an assembled developer portal framework.
+  source_readings:
+  - sections/section-010/module-01/course-01-framework-features-integrations-and-application-ownership.md
+  prompt: What best describes Backstage?
+  options:
+  - id: a
+    text: A database that automatically discovers every service without integration.
+    explanation: Discovery requires deliberate sources and configuration.
+  - id: b
+    text: A framework for assembling a developer portal.
+    explanation: Its application combines configured features and integrations.
+  - id: c
+    text: A replacement for every infrastructure controller.
+    explanation: External controllers retain their responsibilities.
+  correct_option: b
+  explanation: Its application combines configured features and integrations.
+- id: ats070-domain-review-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish catalog, templates and documentation responsibilities.
+  source_readings:
+  - sections/section-010/module-01/course-01-framework-features-integrations-and-application-ownership.md
+  prompt: Which feature primarily presents software ownership and relationships?
+  options:
+  - id: a
+    text: The software catalog.
+    explanation: It models entities and their relationships.
+  - id: b
+    text: The container image layer cache.
+    explanation: Image caching does not model organizational ownership.
+  - id: c
+    text: The TypeScript compiler's output directory.
+    explanation: Build output is not the software inventory.
+  correct_option: a
+  explanation: It models entities and their relationships.
+- id: ats070-domain-review-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Identify what remains the responsibility of the adopting organization.
+  source_readings:
+  - sections/section-010/module-01/course-01-framework-features-integrations-and-application-ownership.md
+  prompt: Who decides the production portal's authorization policy?
+  options:
+  - id: a
+    text: Every user's browser independently.
+    explanation: Client decisions cannot establish server authority.
+  - id: b
+    text: A catalog description automatically grants permissions.
+    explanation: Metadata descriptions are not authorization policy.
+  - id: c
+    text: The organization operating the application.
+    explanation: It must select and implement suitable permission controls.
+  correct_option: c
+  explanation: It must select and implement suitable permission controls.
+- id: ats070-domain-review-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain configuration merging and typed consumption.
+  source_readings:
+  - sections/section-020/module-01/course-01-effective-configuration-visibility-and-secret-boundaries.md
+  prompt: What should authors inspect when multiple configuration files are selected?
+  options:
+  - id: a
+    text: Only the browser's font settings.
+    explanation: Fonts do not explain backend configuration merging.
+  - id: b
+    text: The effective merged configuration and source precedence.
+    explanation: The application consumes the resulting values.
+  - id: c
+    text: Only the first file's comments.
+    explanation: Comments do not define the effective overrides.
+  correct_option: b
+  explanation: The application consumes the resulting values.
+- id: ats070-domain-review-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish browser-visible settings from backend-only values.
+  source_readings:
+  - sections/section-020/module-01/course-01-effective-configuration-visibility-and-secret-boundaries.md
+  prompt: Where should an external integration token normally remain?
+  options:
+  - id: a
+    text: In backend-only configuration supplied through secret management.
+    explanation: Browser-visible settings can be inspected by users.
+  - id: b
+    text: In a frontend configuration field for every browser.
+    explanation: That would disclose the credential.
+  - id: c
+    text: In the Component entity's public description.
+    explanation: Catalog descriptions are not a secret-delivery path.
+  correct_option: a
+  explanation: Browser-visible settings can be inspected by users.
+- id: ats070-domain-review-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Reason about overrides, arrays and environment-dependent configuration.
+  source_readings:
+  - sections/section-020/module-01/course-01-effective-configuration-visibility-and-secret-boundaries.md
+  prompt: Why review an array in a higher-priority configuration source carefully?
+  options:
+  - id: a
+    text: Arrays automatically validate every external credential.
+    explanation: Array merging is not authorization.
+  - id: b
+    text: Every array is ignored by Backstage.
+    explanation: Configuration can contain meaningful arrays.
+  - id: c
+    text: It can replace a lower-priority array rather than append to it.
+    explanation: Merge behavior can remove previously configured entries.
+  correct_option: c
+  explanation: Merge behavior can remove previously configured entries.
+- id: ats070-domain-review-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Identify the application, database and integration dependencies of a deployment.
+  source_readings:
+  - sections/section-030/module-01/course-01-production-deployment-persistence-and-operational-boundaries.md
+  prompt: Which resource commonly needs durable operation beyond application replicas?
+  options:
+  - id: a
+    text: The developer's discarded build log.
+    explanation: That log is not the application's durable data store.
+  - id: b
+    text: The application's production database.
+    explanation: Application metadata and plugin state must survive replacement where persistence is required.
+  - id: c
+    text: The browser's temporary component variables.
+    explanation: Those variables are not production persistence.
+  correct_option: b
+  explanation: Application metadata and plugin state must survive replacement where persistence is required.
+- id: ats070-domain-review-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish availability, readiness and functional feature health.
+  source_readings:
+  - sections/section-030/module-01/course-01-production-deployment-persistence-and-operational-boundaries.md
+  prompt: What does a responding health endpoint establish by itself?
+  options:
+  - id: a
+    text: Only the health conditions implemented by that endpoint.
+    explanation: Feature and dependency checks can have different scopes.
+  - id: b
+    text: Every integration is fully authorized.
+    explanation: A generic endpoint does not exercise every permission.
+  - id: c
+    text: All catalog metadata is current and correct.
+    explanation: Health response alone does not prove catalog truth.
+  correct_option: a
+  explanation: Feature and dependency checks can have different scopes.
+- id: ats070-domain-review-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain safe release, secret delivery and persistent-data responsibilities.
+  source_readings:
+  - sections/section-030/module-01/course-01-production-deployment-persistence-and-operational-boundaries.md
+  prompt: Why review database migrations during a release?
+  options:
+  - id: a
+    text: Migrations only rename browser colors.
+    explanation: Database schemas affect server behavior.
+  - id: b
+    text: Every container image contains a reversible copy of the live database.
+    explanation: Live persistent data is separate from the image.
+  - id: c
+    text: Schema changes can affect running versions and rollback compatibility.
+    explanation: Artifact rollback does not automatically reverse durable-data changes.
+  correct_option: c
+  explanation: Artifact rollback does not automatically reverse durable-data changes.
+- id: ats070-domain-review-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Trace a browser feature through its client API and backend route.
+  source_readings:
+  - sections/section-040/module-01/course-01-browser-apis-backend-routes-and-trust-boundaries.md
+  prompt: Where should a privileged source-host API token be used?
+  options:
+  - id: a
+    text: As the visible title of a catalog card.
+    explanation: A title is public presentation data.
+  - id: b
+    text: By the authorized backend integration.
+    explanation: The server can mediate and restrict privileged calls.
+  - id: c
+    text: In downloaded frontend JavaScript.
+    explanation: Users can inspect downloaded code.
+  correct_option: b
+  explanation: The server can mediate and restrict privileged calls.
+- id: ats070-domain-review-q11
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish discovery, authentication and authorization responsibilities.
+  source_readings:
+  - sections/section-040/module-01/course-01-browser-apis-backend-routes-and-trust-boundaries.md
+  prompt: What does service discovery answer?
+  options:
+  - id: a
+    text: Where the relevant backend API can be reached.
+    explanation: It resolves the service location.
+  - id: b
+    text: Whether every user may perform a sensitive action.
+    explanation: That is authorization.
+  - id: c
+    text: Whether incoming data is truthful by definition.
+    explanation: Discovery does not validate business data.
+  correct_option: a
+  explanation: It resolves the service location.
+- id: ats070-domain-review-q12
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain why privileged integrations belong behind server boundaries.
+  source_readings:
+  - sections/section-040/module-01/course-01-browser-apis-backend-routes-and-trust-boundaries.md
+  prompt: Why must a backend enforce permission checks even when the button is hidden?
+  options:
+  - id: a
+    text: React components prevent all direct network calls.
+    explanation: React cannot prevent an independent client.
+  - id: b
+    text: A hidden button encrypts every database record.
+    explanation: Visibility is not encryption.
+  - id: c
+    text: A caller can send requests without using the displayed interface.
+    explanation: The server is the authority boundary.
+  correct_option: c
+  explanation: The server is the authority boundary.
