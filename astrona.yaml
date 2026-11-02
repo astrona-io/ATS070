@@ -35,7 +35,7 @@ modules:
 - id: module-010
   title: Understand the Backstage framework
   description: Developed reading and reasoning for Understand the Backstage framework.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Understand the Backstage framework
@@ -52,7 +52,7 @@ modules:
 - id: module-020
   title: Configure Backstage
   description: Developed reading and reasoning for Configure Backstage.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Configure Backstage
@@ -69,7 +69,7 @@ modules:
 - id: module-030
   title: Deploy Backstage to production
   description: Developed reading and reasoning for Deploy Backstage to production.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Deploy Backstage to production
@@ -86,7 +86,7 @@ modules:
 - id: module-040
   title: Understand Backstage client-server architecture
   description: Developed reading and reasoning for Understand Backstage client-server architecture.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Understand Backstage client-server architecture
