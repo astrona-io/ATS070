@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Frontend, Backend And Service Discovery (PLAYGROUND). A clean sandbox: it starts Backstage and then stays
+# running for free exploration. No task, no grading, no `astrona submit`. Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-070-playground-040-01
+  docs:
+    guide: docs/overview.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/backstage/backstage:1.55.2
+      - curlimages/curl:8.22.0
+  portForwards:
+    - name: backstage
+      resource: svc/backstage
+      namespace: backstage
+      hostPort: 7007
+      targetPort: 7007
+      scheme: http
+      description: "Backstage frontend and backend on one address"
+
+# Starting state: Backstage from the public image with a ConfigMap that holds the base URLs and CORS origin.
+bootstrap:
+  manifests:
+    - name: backstage
+      type: file
+      source: manifests/backstage.yaml
+  waitFor:
+    - resource: deploy/backstage
+      namespace: backstage
+      timeout: 300s
+
+teardown:
+  keepCluster: false

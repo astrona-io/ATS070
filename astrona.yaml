@@ -1,9 +1,11 @@
-# Reading-only content; YAML knowledge checks have a separate index.
+# Course manifest for ATS070. Each section lists its README, modules (landing, parts, lab Question reading and lab entry after the part tested, summary), a capstone and a quiz.
 training:
   id: ATS070
   title: 'CBA: Backstage Infrastructure'
-  description: 'Detailed reading material and reusable YAML knowledge checks for CBA: Backstage Infrastructure.
-    Technical content remains draft. No labs or playgrounds.'
+  description: Concept lessons, playgrounds, graded labs, capstones and original quizzes
+    covering every published objective in the CBA Backstage Infrastructure domain.
+    Labs run Backstage on kind (Kubernetes 1.35). Built untested; technical content
+    remains draft.
   certification:
     name: Certified Backstage Associate
     code: CBA
@@ -34,69 +36,488 @@ modules:
     path: sections/intro/course-03-how-this-course-is-made.md
 - id: module-010
   title: Understand the Backstage framework
-  description: Developed reading and reasoning for Understand the Backstage framework.
-  maturity: alpha
+  description: 'Makes the reader able to describe Backstage as a framework that an
+    organization assembles into its own portal, to name its features and the duties
+    of the adopting organization, and to read the anatomy of an application: project
+    packages, backend plugins, modules, extension points and services, frontend extensions,
+    and version rules.
+
+'
   content:
   - type: reading
-    title: Understand the Backstage framework
+    title: Section Overview
     path: sections/section-010/README.md
   - type: reading
     title: Framework Features, Integrations And Application Ownership
     path: sections/section-010/module-01/course.md
   - type: reading
-    title: Framework Features, Integrations And Application Ownership
-    path: sections/section-010/module-01/course-01-framework-features-integrations-and-application-ownership.md
+    title: What Backstage Is And How A Portal Is Assembled
+    path: sections/section-010/module-01/course-01-what-backstage-is-and-how-a-portal-is-assembled.md
+  - type: reading
+    title: Catalog, Templates, TechDocs, Search And Integrations
+    path: sections/section-010/module-01/course-02-catalog-templates-techdocs-search-and-integrations.md
+  - type: reading
+    title: What The Adopting Organization Owns
+    path: sections/section-010/module-01/course-03-what-the-adopting-organization-owns.md
+  - type: reading
+    title: Question
+    path: sections/section-010/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Configure And Own The Portal Lab
+    path: sections/section-010/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: backstage-framework
+    task_kind: configure
+    tags:
+    - backstage
+    - app-config
+    - configmap
+    - catalog-rules
+    - ownership
+    - rollout
+    learning_goals:
+    - Set the portal title and a catalog rule through a configuration layer and prove
+      that the running pod reads it
+    - Record the owner of the portal on the Deployment
+    - Tell a ready pod apart from a pod that holds the new configuration
+    resources:
+    - name: What is Backstage
+      url: https://backstage.io/docs/overview/what-is-backstage
+    - name: Backstage configuration
+      url: https://backstage.io/docs/conf/
+    - name: Software Catalog
+      url: https://backstage.io/docs/features/software-catalog/
   - type: reading
     title: Summary
-    path: sections/section-010/module-01/course-02-summary.md
+    path: sections/section-010/module-01/course-04-summary.md
+  - type: reading
+    title: 'Application Anatomy: Frontend, Backend And Plugins'
+    path: sections/section-010/module-02/course.md
+  - type: reading
+    title: 'The Project Layout: App, Backend And Plugin Packages'
+    path: sections/section-010/module-02/course-01-the-project-layout-app-backend-and-plugin-packages.md
+  - type: reading
+    title: 'The Backend System: Plugins, Modules, Extension Points And Services'
+    path: sections/section-010/module-02/course-02-the-backend-system-plugins-modules-extension-points-and-services.md
+  - type: reading
+    title: The Frontend, Versions And Upgrades
+    path: sections/section-010/module-02/course-03-the-frontend-versions-and-upgrades.md
+  - type: reading
+    title: Question
+    path: sections/section-010/module-02/labs/lab-01/question.md
+  - type: lab
+    title: Map The Application And Add A Configuration Layer Lab
+    path: sections/section-010/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: backstage-framework
+    task_kind: investigate
+    tags:
+    - backstage
+    - monorepo
+    - backend-plugins
+    - release
+    - app-config
+    - config-layers
+    learning_goals:
+    - Read the entry command, the installed backend plugins and the release from a
+      running image
+    - Add a second configuration file as the last layer and prove that the running
+      pod reads it
+    - Explain which layer wins when two files set the same value
+    resources:
+    - name: Backstage architecture overview
+      url: https://backstage.io/docs/overview/architecture-overview
+    - name: Backend system
+      url: https://backstage.io/docs/backend-system/
+    - name: Versioning policy
+      url: https://backstage.io/docs/overview/versioning-policy
+  - type: reading
+    title: Summary
+    path: sections/section-010/module-02/course-04-summary.md
+  - type: reading
+    title: Question
+    path: sections/section-010/capstone/labs/lab-01/question.md
+  - type: lab
+    title: Understand the Backstage Framework Capstone
+    path: sections/section-010/capstone/labs/lab-01
+    difficulty: advanced
+    estimated_duration: 35m
+    topic: backstage-framework
+    task_kind: fix
+    tags:
+    - backstage
+    - app-config
+    - configmap
+    - catalog-rules
+    - ownership
+    - troubleshooting
+    learning_goals:
+    - Repair a portal whose configuration layer is not mounted by the running pod
+    - Set the title and catalog rules and record the owner on the Deployment
+    - Record who owns the database, the identity and the upgrades
+    resources:
+    - name: Backstage documentation
+      url: https://backstage.io/docs/overview/what-is-backstage
+    - name: Backstage configuration
+      url: https://backstage.io/docs/conf/
+  - type: quiz
+    title: 'Knowledge Check: Understand the Backstage framework'
+    path: sections/section-010/quiz.yaml
+    pass_score: 70
 - id: module-020
   title: Configure Backstage
-  description: Developed reading and reasoning for Configure Backstage.
-  maturity: alpha
+  description: 'Makes the reader able to build the effective configuration of a Backstage
+    application: file order and merging, environment overrides and substitutions,
+    schemas and typed reads, browser visibility and secret delivery on Kubernetes.
+
+'
   content:
   - type: reading
-    title: Configure Backstage
+    title: Section Overview
     path: sections/section-020/README.md
   - type: reading
-    title: Effective Configuration, Visibility And Secret Boundaries
+    title: Configuration Files, Merging And Overrides
     path: sections/section-020/module-01/course.md
   - type: reading
-    title: Effective Configuration, Visibility And Secret Boundaries
-    path: sections/section-020/module-01/course-01-effective-configuration-visibility-and-secret-boundaries.md
+    title: App Configuration Files And The --config Order
+    path: sections/section-020/module-01/course-01-app-configuration-files-and-config-order.md
+  - type: reading
+    title: 'Merge Rules: Objects, Primitives, Arrays And null'
+    path: sections/section-020/module-01/course-02-merge-rules-arrays-and-null.md
+  - type: reading
+    title: Environment Overrides And Substitutions
+    path: sections/section-020/module-01/course-03-environment-overrides-and-substitutions.md
+  - type: reading
+    title: Question
+    path: sections/section-020/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Layer A Production Configuration File And An Override
+    path: sections/section-020/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: backstage-configuration
+    task_kind: build
+    tags:
+    - backstage
+    - app-config
+    - config-merging
+    - app-config-env
+    - configmap
+    learning_goals:
+    - Load a mounted production file as the last --config flag
+    - Override one value with an APP_CONFIG_ variable
+    - Check that the running pod has the new file and variable
   - type: reading
     title: Summary
-    path: sections/section-020/module-01/course-02-summary.md
+    path: sections/section-020/module-01/course-04-summary.md
+  - type: reading
+    title: Visibility, Typing And Secret Boundaries
+    path: sections/section-020/module-02/course.md
+  - type: reading
+    title: Configuration Schemas And Typed Reads
+    path: sections/section-020/module-02/course-01-configuration-schemas-and-typed-reads.md
+  - type: reading
+    title: 'Visibility: What Reaches The Browser'
+    path: sections/section-020/module-02/course-02-visibility-what-reaches-the-browser.md
+  - type: reading
+    title: Secret Delivery And Rotation
+    path: sections/section-020/module-02/course-03-secret-delivery-and-rotation.md
+  - type: reading
+    title: Question
+    path: sections/section-020/module-02/labs/lab-01/question.md
+  - type: lab
+    title: Move A Leaked Token Into A Secret And Rotate It
+    path: sections/section-020/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: backstage-secrets
+    task_kind: fix
+    tags:
+    - backstage
+    - secret
+    - secretkeyref
+    - substitution
+    - rotation
+    learning_goals:
+    - Store a rotated token in a Kubernetes Secret
+    - Replace a plain-text token in a ConfigMap with a reference
+    - Restart the pod so that it reads the new value
+  - type: reading
+    title: Summary
+    path: sections/section-020/module-02/course-04-summary.md
+  - type: reading
+    title: Question
+    path: sections/section-020/capstone/labs/lab-01/question.md
+  - type: lab
+    title: Configure Backstage Capstone
+    path: sections/section-020/capstone/labs/lab-01
+    difficulty: advanced
+    estimated_duration: 30m
+    topic: backstage-configuration
+    task_kind: build
+    tags:
+    - backstage
+    - app-config
+    - overlay
+    - override
+    - secret
+    learning_goals:
+    - Move a leaked token into a Secret and refer to it with a substitution
+    - Load a production overlay as the last --config flag
+    - Set an APP_CONFIG_ override and verify the running pod
+  - type: quiz
+    title: 'Knowledge Check: Configure Backstage'
+    path: sections/section-020/quiz.yaml
+    pass_score: 70
 - id: module-030
   title: Deploy Backstage to production
-  description: Developed reading and reasoning for Deploy Backstage to production.
-  maturity: alpha
+  description: Build the Backstage image, move it to PostgreSQL with persistent data,
+    and run it on Kubernetes with Secrets, health probes and safe releases.
+  status: alpha
   content:
   - type: reading
     title: Deploy Backstage to production
     path: sections/section-030/README.md
   - type: reading
-    title: Production Deployment, Persistence And Operational Boundaries
+    title: Packaging, Persistence And Database
     path: sections/section-030/module-01/course.md
   - type: reading
-    title: Production Deployment, Persistence And Operational Boundaries
-    path: sections/section-030/module-01/course-01-production-deployment-persistence-and-operational-boundaries.md
+    title: Building The Backstage Image
+    path: sections/section-030/module-01/course-01-building-the-backstage-image.md
+  - type: reading
+    title: PostgreSQL And Plugin Databases
+    path: sections/section-030/module-01/course-02-postgresql-and-plugin-databases.md
+  - type: reading
+    title: Question
+    path: sections/section-030/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Move Backstage From SQLite To PostgreSQL
+    path: sections/section-030/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 30m
+    topic: backstage-deployment
+    task_kind: fix
+    tags:
+    - backstage
+    - postgresql
+    - sqlite
+    - configmap
+    - secret
+    - kubernetes
+    learning_goals:
+    - Select PostgreSQL in the Backstage app config with connection values read from
+      environment variables
+    - Keep the database password in a Secret and load it into the Backstage container
+    - Keep PostgreSQL data on a PersistentVolumeClaim and restart Backstage so that
+      it uses the new database
+    resources:
+    - name: Backstage Docker deployment
+      url: https://backstage.io/docs/deployment/docker
+    - name: Switching Backstage from SQLite to PostgreSQL
+      url: https://backstage.io/docs/tutorials/switching-sqlite-postgres
+  - type: reading
+    title: Migrations, Backups And Data Ownership
+    path: sections/section-030/module-01/course-03-migrations-backups-and-data-ownership.md
   - type: reading
     title: Summary
-    path: sections/section-030/module-01/course-02-summary.md
+    path: sections/section-030/module-01/course-04-summary.md
+  - type: reading
+    title: 'Running On Kubernetes: Secrets, Probes And Releases'
+    path: sections/section-030/module-02/course.md
+  - type: reading
+    title: Deployment, Service, Ingress And Base URLs
+    path: sections/section-030/module-02/course-01-deployment-service-ingress-and-base-urls.md
+  - type: reading
+    title: Secrets And Health Probes
+    path: sections/section-030/module-02/course-02-secrets-and-health-probes.md
+  - type: reading
+    title: Question
+    path: sections/section-030/module-02/labs/lab-01/question.md
+  - type: lab
+    title: Secrets, Probes And A Safe Rollout
+    path: sections/section-030/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 30m
+    topic: backstage-deployment
+    task_kind: fix
+    tags:
+    - backstage
+    - secret
+    - readiness-probe
+    - liveness-probe
+    - rolling-update
+    - replicas
+    learning_goals:
+    - Move a token from a plain environment value into a Secret loaded with envFrom
+    - Add readiness and liveness probes that call the Backstage backend health endpoints
+    - Run two replicas with a rolling update that never reduces available pods
+    resources:
+    - name: Backstage Kubernetes deployment
+      url: https://backstage.io/docs/deployment/k8s
+    - name: Configure liveness, readiness and startup probes
+      url: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+    - name: Kubernetes Secrets
+      url: https://kubernetes.io/docs/concepts/configuration/secret/
+  - type: reading
+    title: Rolling Releases And Feature Health
+    path: sections/section-030/module-02/course-03-rolling-releases-and-feature-health.md
+  - type: reading
+    title: Summary
+    path: sections/section-030/module-02/course-04-summary.md
+  - type: reading
+    title: Question
+    path: sections/section-030/capstone/labs/lab-01/question.md
+  - type: lab
+    title: Deploy Backstage To Production Capstone
+    path: sections/section-030/capstone/labs/lab-01
+    difficulty: advanced
+    estimated_duration: 40m
+    topic: backstage-deployment
+    task_kind: build
+    tags:
+    - backstage
+    - postgresql
+    - secret
+    - probes
+    - rolling-update
+    - ingress
+    - base-url
+    learning_goals:
+    - Configure PostgreSQL, a Secret for credentials, probes and a rolling update
+      for Backstage
+    - Align the Backstage base URLs with the public address
+    - Route the public host name to the Backstage Service with an Ingress
+    resources:
+    - name: Kubernetes Deployments
+      url: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+    - name: Kubernetes Ingress
+      url: https://kubernetes.io/docs/concepts/services-networking/ingress/
+  - type: quiz
+    title: 'Knowledge Check: Deploy Backstage To Production'
+    path: sections/section-030/quiz.yaml
+    pass_score: 70
 - id: module-040
   title: Understand Backstage client-server architecture
-  description: Developed reading and reasoning for Understand Backstage client-server architecture.
-  maturity: alpha
+  description: 'Explains how a Backstage portal splits into a browser app and a backend
+    process, how addresses, CORS and a reverse proxy fit together, how plugin routes
+    and discovery work, and how authentication, authorization and server-side credentials
+    protect the data.
+
+'
   content:
   - type: reading
     title: Understand Backstage client-server architecture
     path: sections/section-040/README.md
   - type: reading
-    title: Browser APIs, Backend Routes And Trust Boundaries
+    title: Frontend, Backend And Service Discovery
     path: sections/section-040/module-01/course.md
   - type: reading
-    title: Browser APIs, Backend Routes And Trust Boundaries
-    path: sections/section-040/module-01/course-01-browser-apis-backend-routes-and-trust-boundaries.md
+    title: Browser App, Backend Process And The Request Path
+    path: sections/section-040/module-01/course-01-browser-app-backend-process-and-request-path.md
+  - type: reading
+    title: Base URLs, Listen, CORS And The Reverse Proxy
+    path: sections/section-040/module-01/course-02-base-urls-listen-cors-and-reverse-proxy.md
+  - type: reading
+    title: Question
+    path: sections/section-040/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Set The Public Address Lab
+    path: sections/section-040/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: backstage-architecture
+    task_kind: fix
+    tags:
+    - backstage
+    - base-url
+    - cors
+    - reverse-proxy
+    - configmap
+    - restart
+    learning_goals:
+    - Set app.baseUrl, backend.baseUrl and backend.cors.origin for a reverse proxy
+      address
+    - Keep the listen port, container port and Service unchanged
+    - Restart the Deployment so the process reads the new configuration
+  - type: reading
+    title: Plugin Routes, Discovery And Error States
+    path: sections/section-040/module-01/course-03-plugin-routes-discovery-and-error-states.md
   - type: reading
     title: Summary
-    path: sections/section-040/module-01/course-02-summary.md
+    path: sections/section-040/module-01/course-04-summary.md
+  - type: reading
+    title: Authentication, Authorization And Trust Boundaries
+    path: sections/section-040/module-02/course.md
+  - type: reading
+    title: Sign-In, Identity And Service Authentication
+    path: sections/section-040/module-02/course-01-sign-in-identity-and-service-auth.md
+  - type: reading
+    title: Permission Decisions On The Server
+    path: sections/section-040/module-02/course-02-permission-decisions-on-the-server.md
+  - type: reading
+    title: Privileged Integrations And Credentials
+    path: sections/section-040/module-02/course-03-privileged-integrations-and-credentials.md
+  - type: reading
+    title: Question
+    path: sections/section-040/module-02/labs/lab-01/question.md
+  - type: lab
+    title: Secure The Backend Lab
+    path: sections/section-040/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: backstage-security
+    task_kind: fix
+    tags:
+    - backstage
+    - auth-policy
+    - external-access
+    - permission
+    - secret
+    - environment-variable
+    learning_goals:
+    - Re-enable the default auth policy and enable the permission framework
+    - Add a static external access entry restricted to the catalog plugin
+    - Deliver the token from a Kubernetes Secret instead of the ConfigMap
+    resources:
+    - name: Backstage service-to-service auth
+      url: https://backstage.io/docs/auth/service-to-service-auth
+    - name: Backstage permission framework overview
+      url: https://backstage.io/docs/permissions/overview
+  - type: reading
+    title: Summary
+    path: sections/section-040/module-02/course-04-summary.md
+  - type: reading
+    title: Question
+    path: sections/section-040/capstone/labs/lab-01/question.md
+  - type: lab
+    title: Client-Server Architecture Capstone
+    path: sections/section-040/capstone/labs/lab-01
+    difficulty: advanced
+    estimated_duration: 35m
+    topic: backstage-architecture
+    task_kind: fix
+    tags:
+    - backstage
+    - base-url
+    - cors
+    - auth-policy
+    - external-access
+    - permission
+    - secret
+    learning_goals:
+    - Prepare a portal for a reverse proxy address without changing its port
+    - Restore the default auth policy and enable the permission framework
+    - Replace a literal token with a placeholder fed from a Secret
+    resources:
+    - name: Backstage proxy plugin
+      url: https://backstage.io/docs/plugins/proxying
+  - type: quiz
+    title: 'Knowledge Check: Understand Backstage client-server architecture'
+    path: sections/section-040/quiz.yaml
+    pass_score: 70
+  - type: quiz
+    title: "Final Knowledge Check: Backstage Infrastructure"
+    path: sections/final-domain-quiz.yaml
+    pass_score: 70

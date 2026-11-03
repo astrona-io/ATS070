@@ -1,0 +1,68 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Align Base URLs And CORS Behind A Reverse Proxy (LAB). Graded against the live cluster. Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-070-lab-040-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/backstage/backstage:1.55.2
+      - curlimages/curl:8.22.0
+
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: "Start Backstage with a local development address in its configuration"
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+    - name: wait-for-settled
+      description: Wait until the restarted pod is ready
+      type: file
+      source: testing/wait-for-settled.sh
+
+validation:
+  scripts:
+    - name: app-base-url
+      description: "app.baseUrl is the proxy address"
+      type: file
+      source: validation/validate-app-base-url.sh
+      hint: "Set app.baseUrl in the ConfigMap backstage-app-config to https://portal.starfleet.example."
+    - name: backend-base-url
+      description: "backend.baseUrl is the proxy address"
+      type: file
+      source: validation/validate-backend-base-url.sh
+      hint: "Set backend.baseUrl to https://portal.starfleet.example. The proxy sends /api to the backend on the same address."
+    - name: cors-origin
+      description: "backend.cors.origin is the proxy address"
+      type: file
+      source: validation/validate-cors-origin.sh
+      hint: "Set backend.cors.origin to https://portal.starfleet.example. It is the origin of the page, so it has no path."
+    - name: listen-port-kept
+      description: "The backend still listens on 7007 and the Service still targets it"
+      type: file
+      source: validation/validate-listen-port-kept.sh
+      hint: "The proxy address changes. The port inside the cluster stays 7007. Do not edit backend.listen.port, the Service or the container port."
+    - name: restarted-and-ready
+      description: "Backstage runs with the changed configuration"
+      type: file
+      source: validation/validate-restarted-and-ready.sh
+      hint: "Backstage reads its files when it starts. Restart the Deployment after you change the ConfigMap, then wait for the rollout."
+
+teardown:
+  keepCluster: false

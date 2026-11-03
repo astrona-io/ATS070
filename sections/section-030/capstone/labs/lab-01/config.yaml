@@ -1,0 +1,94 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Deploy Backstage To Production Capstone (LAB). Starting state: Backstage with SQLite in memory, a plain-text token, no probes, one replica and a local address; PostgreSQL with its Secret and claim. Graded against the live cluster. Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-070-capstone-030
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/backstage/backstage:1.55.2
+      - curlimages/curl:8.22.0
+      - postgres:16-alpine
+
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the namespace, Backstage with SQLite, a plain-text token and no probes, plus PostgreSQL
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+    - name: wait-for-settled
+      description: Wait until the rollout has finished
+      type: file
+      source: testing/wait-for-settled.sh
+
+validation:
+  scripts:
+    - name: db-config-uses-pg
+      description: The ConfigMap selects PostgreSQL with POSTGRES_ substitutions
+      type: file
+      source: validation/validate-db-config-uses-pg.sh
+      hint: Set backend.database.client to pg with host, port, user and password read from ${POSTGRES_HOST}, ${POSTGRES_PORT}, ${POSTGRES_USER} and ${POSTGRES_PASSWORD}. Remove the SQLite settings.
+    - name: password-not-plain
+      description: The database password is in neither the ConfigMap nor the Deployment
+      type: file
+      source: validation/validate-password-not-plain.sh
+      hint: Use the Secret postgres-secrets with envFrom. Do not type the password.
+    - name: db-env-from-secret
+      description: Backstage reads postgres-secrets and sets POSTGRES_HOST and POSTGRES_PORT
+      type: file
+      source: validation/validate-db-env-from-secret.sh
+      hint: Add envFrom secretRef postgres-secrets plus POSTGRES_HOST=postgres and POSTGRES_PORT=5432 to the container.
+    - name: token-in-secret
+      description: The Secret backstage-secrets holds GITHUB_TOKEN
+      type: file
+      source: validation/validate-token-in-secret.sh
+      hint: Create backstage-secrets with the key GITHUB_TOKEN and the value now in the Deployment.
+    - name: token-not-plain
+      description: The Deployment reads the token from the Secret only
+      type: file
+      source: validation/validate-token-not-plain.sh
+      hint: Remove the plain env entry and add envFrom secretRef backstage-secrets. Keep both envFrom entries.
+    - name: probes-configured
+      description: Readiness and liveness probes use the Backstage health endpoints
+      type: file
+      source: validation/validate-probes-configured.sh
+      hint: httpGet on /.backstage/health/v1/readiness and /.backstage/health/v1/liveness, port http.
+    - name: replicas-rolling
+      description: Two replicas and RollingUpdate with maxUnavailable 0
+      type: file
+      source: validation/validate-replicas-rolling.sh
+      hint: Set replicas 2 and the strategy RollingUpdate with maxUnavailable 0.
+    - name: base-url-aligned
+      description: app.baseUrl, backend.baseUrl and backend.cors.origin use the public address
+      type: file
+      source: validation/validate-base-url-aligned.sh
+      hint: All three values must be https://portal.starfleet.example.com.
+    - name: ingress-routes-to-backstage
+      description: The Ingress backstage sends the public host to backstage:7007
+      type: file
+      source: validation/validate-ingress-routes-to-backstage.sh
+      hint: Create an Ingress named backstage with the host portal.starfleet.example.com and the Service backstage on port 7007.
+    - name: backstage-available
+      description: Two ready Backstage pods run the changed template
+      type: file
+      source: validation/validate-backstage-available.sh
+      hint: Wait for the rollout to finish.
+
+teardown:
+  keepCluster: false

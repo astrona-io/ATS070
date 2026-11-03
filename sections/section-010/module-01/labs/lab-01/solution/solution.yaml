@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backstage-app-config
+  namespace: backstage
+data:
+  app-config.lab.yaml: |
+    app:
+      title: Starfleet Developer Portal
+      baseUrl: http://localhost:7007
+    organization:
+      name: Starfleet
+    backend:
+      baseUrl: http://localhost:7007
+      listen:
+        port: 7007
+      cors:
+        origin: http://localhost:7007
+      database:
+        client: better-sqlite3
+        connection: ':memory:'
+    catalog:
+      rules:
+        - allow: [Component, System, API, Resource, Location]

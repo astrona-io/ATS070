@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Packaging, Persistence And Database (PLAYGROUND). A clean sandbox: it starts Backstage and, where
+# needed, PostgreSQL, then stays running for free exploration. No task, no
+# grading, no `astrona submit`. Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-070-playground-030-01
+  docs:
+    guide: docs/overview.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/backstage/backstage:1.55.2
+      - curlimages/curl:8.22.0
+      - postgres:16-alpine
+  portForwards:
+    - name: backstage
+      resource: svc/backstage
+      namespace: backstage
+      hostPort: 7007
+      targetPort: 7007
+      scheme: http
+      description: "Backstage on http://127.0.0.1:7007 once the pod is ready"
+
+bootstrap:
+  manifests:
+    - name: start
+      type: file
+      source: manifests/start.yaml
+  waitFor:
+    - resource: deploy/backstage
+      namespace: backstage
+    - resource: deploy/postgres
+      namespace: backstage
+
+teardown:
+  keepCluster: false

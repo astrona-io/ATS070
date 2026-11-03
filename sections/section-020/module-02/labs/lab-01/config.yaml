@@ -1,0 +1,71 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Move A Leaked Token Into A Secret And Rotate It (LAB). Graded against the
+# live cluster. Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-070-lab-020-02
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/backstage/backstage:1.55.2
+      - curlimages/curl:8.22.0
+
+# Starting state: Backstage whose mounted file holds a plain-text example
+# GitHub token. The failure is left in place on purpose.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create Backstage with a plain-text example token in its ConfigMap
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+    - name: wait-for-settled
+      description: Wait until the old pod is gone
+      type: file
+      source: testing/wait-for-settled.sh
+
+validation:
+  scripts:
+    - name: secret-rotated
+      description: The Secret backstage-secrets holds the rotated token in the key GITHUB_TOKEN
+      type: file
+      source: validation/validate-secret-rotated.sh
+      hint: Create the Secret in the namespace backstage with the key GITHUB_TOKEN and the new value from the task, not the old one.
+    - name: configmap-clean
+      description: No ConfigMap holds token text and the file refers to ${GITHUB_TOKEN}
+      type: file
+      source: validation/validate-configmap-clean.sh
+      hint: Replace the token value under integrations.github with ${GITHUB_TOKEN} in the ConfigMap backstage-app-config. Keep every other key.
+    - name: deployment-uses-secret
+      description: The container gets GITHUB_TOKEN from the Secret and not as a literal value
+      type: file
+      source: validation/validate-deployment-uses-secret.sh
+      hint: Use env with valueFrom.secretKeyRef, or envFrom with secretRef, pointing to backstage-secrets. Do not write the token as a plain value.
+    - name: running-pod-token
+      description: The running pod has GITHUB_TOKEN with the rotated value
+      type: file
+      source: validation/validate-running-pod-token.sh
+      hint: The process reads its environment and files at startup. Wait for the new pod, or restart the Deployment.
+    - name: backstage-available
+      description: Backstage is available with its original image and flags
+      type: file
+      source: validation/validate-backstage-available.sh
+      hint: Change the existing objects. Do not delete the Deployment or change its image.
+
+teardown:
+  keepCluster: false

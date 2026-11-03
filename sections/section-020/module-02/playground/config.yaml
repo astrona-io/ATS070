@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Visibility, Typing And Secret Boundaries (PLAYGROUND) - playground
+# environment. A clean sandbox: Backstage runs from the public image with one
+# mounted configuration file, then stays running for free exploration. No
+# task, no grading, no `astrona submit`. Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-070-playground-020-02
+  docs:
+    guide: docs/overview.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/backstage/backstage:1.55.2
+      - curlimages/curl:8.22.0
+  portForwards:
+    - name: backstage
+      resource: svc/backstage
+      namespace: backstage
+      hostPort: 7007
+      targetPort: 7007
+      scheme: http
+      description: "Backstage backend and frontend on http://127.0.0.1:7007"
+
+bootstrap:
+  manifests:
+    - name: backstage
+      type: file
+      source: manifests/backstage.yaml
+  waitFor:
+    - resource: deploy/backstage
+      namespace: backstage
+
+teardown:
+  keepCluster: false

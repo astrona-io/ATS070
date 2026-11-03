@@ -1,0 +1,268 @@
+# Knowledge check for section 010. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats070-010
+course_id: ATS070
+exam_code: CBA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-010
+  title: Understand the Backstage framework
+questions:
+- id: ats070-010-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain Backstage as an assembled developer portal framework
+  source_readings:
+  - sections/section-010/module-01/course-01-what-backstage-is-and-how-a-portal-is-assembled.md
+  prompt: A manager asks what the team installs when it adopts Backstage. Which answer
+    is correct?
+  options:
+  - id: a
+    text: A finished hosted portal that the Backstage project operates.
+    explanation: The project publishes a framework and packages. The adopting organization
+      builds and runs its own application.
+  - id: b
+    text: A framework from which the organization assembles, builds and operates its
+      own portal application.
+    explanation: Correct. The organization chooses plugins, builds an image and runs
+      it.
+  - id: c
+    text: A database that finds every service in the company without configuration.
+    explanation: The catalog shows only what a configured source delivers.
+  - id: d
+    text: A replacement for the deployment and source hosting systems.
+    explanation: Those systems keep doing their work. The portal presents information
+      and starts actions.
+  correct_option: b
+  explanation: Backstage is a framework that the adopting organization assembles into
+    its own application.
+- id: ats070-010-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain Backstage as an assembled developer portal framework
+  source_readings:
+  - sections/section-010/module-01/course-01-what-backstage-is-and-how-a-portal-is-assembled.md
+  prompt: A deployment card on the portal shows a wrong status for the `scout` service.
+    Which check comes first, according to the three questions of installed, configured
+    and permitted?
+  options:
+  - id: a
+    text: Whether the frontend was written in the correct language.
+    explanation: The language of the frontend does not explain a wrong status.
+  - id: b
+    text: Whether the plugin is installed, configured with the right settings and
+      permitted to read the external system.
+    explanation: Correct. Each of the three answers points at a different owner.
+  - id: c
+    text: Whether the browser of the user is the newest version.
+    explanation: A wrong status that all users see is not a browser problem.
+  - id: d
+    text: Whether the catalog has more than ten entities.
+    explanation: The number of entities does not decide the status on one card.
+  correct_option: b
+  explanation: A feature needs the plugin installed, the settings configured and the
+    access permitted.
+- id: ats070-010-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish catalog, templates and documentation responsibilities
+  source_readings:
+  - sections/section-010/module-01/course-02-catalog-templates-techdocs-search-and-integrations.md
+  prompt: Which component reads `catalog-info.yaml` files from registered locations
+    and stores the entities in the database?
+  options:
+  - id: a
+    text: The TechDocs build step.
+    explanation: TechDocs turns Markdown into pages. It does not store catalog entities.
+  - id: b
+    text: The scaffolder backend.
+    explanation: The scaffolder runs template actions.
+  - id: c
+    text: The catalog backend.
+    explanation: Correct. It reads locations, validates entities, builds relations
+      and stores the result.
+  - id: d
+    text: The frontend app.
+    explanation: The frontend only renders what the backend returns.
+  correct_option: c
+  explanation: The catalog backend reads descriptors and stores entities.
+- id: ats070-010-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish catalog, templates and documentation responsibilities
+  source_readings:
+  - sections/section-010/module-01/course-02-catalog-templates-techdocs-search-and-integrations.md
+  prompt: A user submits a software template form. The form works, but the step that
+    creates the repository fails with a denied response. What is the most likely cause?
+  options:
+  - id: a
+    text: The template form has too many fields.
+    explanation: The number of fields does not cause a denied response from the source
+      host.
+  - id: b
+    text: The integration token that the backend uses cannot create repositories,
+      or it is missing.
+    explanation: Correct. The backend calls the source host with its own credentials.
+  - id: c
+    text: The catalog has the kind `Template` in its allow list.
+    explanation: That setting controls which kinds the catalog accepts, not what a
+      running action may do.
+  - id: d
+    text: TechDocs has not built the pages yet.
+    explanation: Documentation builds do not affect the action that creates a repository.
+  correct_option: b
+  explanation: The scaffolder backend runs actions with the permissions of the backend
+    integration.
+- id: ats070-010-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish catalog, templates and documentation responsibilities
+  source_readings:
+  - sections/section-010/module-01/course-02-catalog-templates-techdocs-search-and-integrations.md
+  prompt: The configuration contains `catalog.rules` with one `allow` list that has
+    `Component` and `API`. A source then delivers a `Resource` entity. What happens?
+  options:
+  - id: a
+    text: The catalog rejects the entity because its kind is not in the allow list.
+    explanation: Correct. The rule limits which kinds a source may add.
+  - id: b
+    text: The catalog stores it, because rules apply only to `Template`.
+    explanation: Rules apply to every kind that is not in the list.
+  - id: c
+    text: The backend restarts and loads the kind automatically.
+    explanation: The backend never changes its rules at run time.
+  - id: d
+    text: The entity moves to TechDocs.
+    explanation: TechDocs does not store catalog entities.
+  correct_option: a
+  explanation: The allow list of catalog.rules decides which kinds a source may add.
+- id: ats070-010-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Identify what remains the responsibility of the adopting organization
+  source_readings:
+  - sections/section-010/module-01/course-03-what-the-adopting-organization-owns.md
+  prompt: A portal runs with `better-sqlite3` and the connection `:memory:`. The pod
+    is ready. The team restarts the pod. What does it lose?
+  options:
+  - id: a
+    text: Nothing, because a ready pod keeps its data.
+    explanation: Readiness shows that the health check passes, not that data persists.
+  - id: b
+    text: Only the Kubernetes Service.
+    explanation: The Service object stays in the cluster.
+  - id: c
+    text: All data in the in-memory database, which the backend must collect again.
+    explanation: Correct. The database lives only in the memory of the process.
+  - id: d
+    text: The container image.
+    explanation: The image stays in the node cache.
+  correct_option: c
+  explanation: An in-memory database loses all data when the process stops.
+- id: ats070-010-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Identify what remains the responsibility of the adopting organization
+  source_readings:
+  - sections/section-010/module-01/course-03-what-the-adopting-organization-owns.md
+  prompt: Which of these duties does the Backstage project not do for the adopting
+    organization?
+  options:
+  - id: a
+    text: Publishing a new release every month.
+    explanation: The project does publish releases.
+  - id: b
+    text: Choosing the sign-in provider and the permission policy for the portal.
+    explanation: Correct. Identity and authorization are decisions of the organization.
+  - id: c
+    text: Providing the framework packages and the command-line tool.
+    explanation: The project provides these.
+  - id: d
+    text: Defining the plugin package naming rules.
+    explanation: The project defines these rules.
+  correct_option: b
+  explanation: The organization owns identity, authorization, database, secrets, operation
+    and upgrades.
+- id: ats070-010-q08
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Name the standard packages of a Backstage project and the role
+    of each one
+  source_readings:
+  - sections/section-010/module-02/course-01-the-project-layout-app-backend-and-plugin-packages.md
+  prompt: Which package of a standard Backstage project is the server process that
+    the container runs with `node packages/backend`?
+  options:
+  - id: a
+    text: "`packages/app`."
+    explanation: This package is the frontend that runs in the browser.
+  - id: b
+    text: "`packages/backend`."
+    explanation: Correct. It wires backend plugins and modules together and starts
+      them.
+  - id: c
+    text: "`plugin-catalog-react`."
+    explanation: This is a library package for the frontend side of one plugin.
+  - id: d
+    text: "`plugin-catalog-common`."
+    explanation: This package holds code that runs on both sides.
+  correct_option: b
+  explanation: The backend package is the deployable server.
+- id: ats070-010-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain how the backend system combines plugins, modules, extension
+    points and services
+  source_readings:
+  - sections/section-010/module-02/course-02-the-backend-system-plugins-modules-extension-points-and-services.md
+  prompt: A team writes a module that adds a new entity provider to the catalog. Which
+    statement is correct?
+  options:
+  - id: a
+    text: The module registers at an extension point of the catalog plugin and runs
+      in the same backend instance as that plugin.
+    explanation: Correct. A module extends one plugin in the same instance.
+  - id: b
+    text: The module calls the internal functions of the catalog plugin directly from
+      another deployment.
+    explanation: Modules do not reach into the code of a plugin. They use extension
+      points.
+  - id: c
+    text: The module must run in its own deployment with its own database.
+    explanation: A module shares the services of the plugin it extends.
+  - id: d
+    text: The module replaces the backend instance.
+    explanation: The instance only wires and starts plugins and modules.
+  correct_option: a
+  explanation: A module uses the extension points of one plugin and runs in the same
+    instance.
+- id: ats070-010-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain the version rules that decide whether a set of packages
+    can run together
+  source_readings:
+  - sections/section-010/module-02/course-03-the-frontend-versions-and-upgrades.md
+  prompt: A frontend plugin has a backend counterpart, and both have a new version.
+    In which order should they be deployed?
+  options:
+  - id: a
+    text: The frontend first, because users see it.
+    explanation: A new frontend can call routes that the old backend does not have.
+  - id: b
+    text: The backend before or together with the frontend.
+    explanation: Correct. An old frontend can still call a new backend that keeps
+      the old routes.
+  - id: c
+    text: The order does not matter.
+    explanation: A wrong order causes errors in the browser.
+  - id: d
+    text: Only the frontend, because the backend never changes.
+    explanation: The backend counterpart has a new version too.
+  correct_option: b
+  explanation: Deploy the backend before or together with the frontend that needs
+    it.

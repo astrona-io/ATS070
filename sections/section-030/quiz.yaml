@@ -1,0 +1,272 @@
+# Knowledge check for section 030. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats070-030
+course_id: ATS070
+exam_code: CBA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-030
+  title: Deploy Backstage to production
+questions:
+- id: ats070-030-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain what the host build produces for the Backstage image
+  source_readings:
+  - sections/section-030/module-01/course-01-building-the-backstage-image.md
+  prompt: In the host build, which commands run on the build machine before `docker
+    image build` packages the backend?
+  options:
+  - id: a
+    text: "`docker compose up` and `kubectl apply`."
+    explanation: These start containers and apply manifests. They do not build the
+      backend bundle.
+  - id: b
+    text: "`yarn install --immutable`, `yarn tsc` and `yarn build:backend`."
+    explanation: Correct. They install the locked dependencies, type check the code
+      and build the backend bundle that the Dockerfile copies.
+  - id: c
+    text: "`yarn start` only, because it builds and serves in one step."
+    explanation: "`yarn start` runs the development servers. It does not produce the
+      backend bundle for the image."
+  - id: d
+    text: Nothing, because the Dockerfile compiles the code itself.
+    explanation: In the host build, the Dockerfile only copies archives that were
+      built before.
+  correct_option: b
+  explanation: The host build installs, type checks and builds the backend on the
+    machine, and the Dockerfile packages the result.
+- id: ats070-030-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Compare the host build with the multi-stage build
+  source_readings:
+  - sections/section-030/module-01/course-01-building-the-backstage-image.md
+  prompt: A team wants the image build to need only Docker on the build machine, with
+    no Node.js or Yarn installed. Which approach fits?
+  options:
+  - id: a
+    text: The host build, because it runs the build steps on the machine.
+    explanation: The host build needs Node.js and Yarn on the machine, which the team
+      wants to avoid.
+  - id: b
+    text: Either one, because both build the same way.
+    explanation: They differ in where the build steps run.
+  - id: c
+    text: Neither, because a Backstage image cannot be built from a Dockerfile.
+    explanation: The official documentation describes both builds with a Dockerfile.
+  - id: d
+    text: The multi-stage build, which installs dependencies and builds inside the
+      Dockerfile stages.
+    explanation: Correct. The stages run the build steps inside Docker, so the host
+      needs only Docker.
+  correct_option: d
+  explanation: The multi-stage build moves the build steps into the Dockerfile, so
+    only Docker is needed on the machine.
+- id: ats070-030-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: State what in-memory SQLite loses
+  source_readings:
+  - sections/section-030/module-01/course-02-postgresql-and-plugin-databases.md
+  prompt: Backstage runs on the default in-memory SQLite. The pod restarts. What happens
+    to the catalog data stored in the database?
+  options:
+  - id: a
+    text: It is lost, because the database lived only in the memory of the old process.
+    explanation: Correct. An in-memory database ends with the process.
+  - id: b
+    text: It is kept, because Kubernetes copies pod memory to a volume.
+    explanation: Kubernetes does not copy process memory anywhere.
+  - id: c
+    text: It is kept, because Backstage writes it to the image.
+    explanation: A running container does not change its image.
+  - id: d
+    text: It is kept, because the Service stores it.
+    explanation: A Service routes traffic. It stores no data.
+  correct_option: a
+  explanation: In-memory SQLite exists only inside the process, so a restart starts
+    from an empty database.
+- id: ats070-030-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Configure the PostgreSQL connection through environment substitution
+  source_readings:
+  - sections/section-030/module-01/course-02-postgresql-and-plugin-databases.md
+  prompt: The `backend.database` block uses `${POSTGRES_PASSWORD}`. Where should the
+    value of that variable come from in a production Deployment?
+  options:
+  - id: a
+    text: A plain `value:` written in the Deployment manifest in the repository.
+    explanation: A plain value in a manifest exposes the password to everyone who
+      can read the repository or the Deployment.
+  - id: b
+    text: The ConfigMap that also contains `app-config.yaml`.
+    explanation: A ConfigMap is not meant for credentials.
+  - id: c
+    text: A Secret loaded into the container with `envFrom` or `secretKeyRef`.
+    explanation: Correct. The configuration holds only the variable name and the Secret
+      holds the value.
+  - id: d
+    text: The container image, set at build time.
+    explanation: A password in an image is available to everyone who can pull it.
+  correct_option: c
+  explanation: A Secret keeps the value out of the image, the ConfigMap and the repository.
+- id: ats070-030-q05
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Explain the Kubernetes service environment variable collision
+  source_readings:
+  - sections/section-030/module-01/course-02-postgresql-and-plugin-databases.md
+  prompt: A Service named `postgres` exists in the namespace of Backstage. The Backstage
+    config reads `${POSTGRES_PORT}` and the Secret does not define it. The connection
+    fails with an invalid port. What is the most likely cause?
+  options:
+  - id: a
+    text: PostgreSQL does not listen on any port by default.
+    explanation: PostgreSQL listens on 5432 by default.
+  - id: b
+    text: Backstage cannot read environment variables.
+    explanation: Backstage supports `${VAR}` substitution in configuration.
+  - id: c
+    text: The PersistentVolumeClaim is full.
+    explanation: A full volume does not change the value of a port variable.
+  - id: d
+    text: Kubernetes injects `POSTGRES_PORT` for the Service in the form `tcp://<ip>:5432`,
+      which is not a number.
+    explanation: Correct. Kubernetes creates variables such as `<SERVICE>_PORT` for
+      Services, and the value is a URL. Setting `POSTGRES_PORT` explicitly overrides
+      it.
+  correct_option: d
+  explanation: The Service injects `POSTGRES_PORT=tcp://...`, so the value must be
+    set explicitly to the port number.
+- id: ats070-030-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Describe persistent-data ownership for the database
+  source_readings:
+  - sections/section-030/module-01/course-03-migrations-backups-and-data-ownership.md
+  prompt: Which component owns the persistent data of a Backstage installation that
+    uses PostgreSQL?
+  options:
+  - id: a
+    text: The Backstage pods, which keep the data in their file systems.
+    explanation: Pod file systems end with the pod.
+  - id: b
+    text: The PostgreSQL server and its volume, which must be backed up and restored.
+    explanation: Correct. The Backstage pods are replaceable. The database and its
+      volume hold the state.
+  - id: c
+    text: The Ingress, which stores requests.
+    explanation: An Ingress routes traffic and stores no data.
+  - id: d
+    text: The image registry, which keeps a copy of the data.
+    explanation: A registry stores images, not application data.
+  correct_option: b
+  explanation: State lives in PostgreSQL and its volume, so backups and restores apply
+    to the database.
+- id: ats070-030-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Align the base URLs with the public address
+  source_readings:
+  - sections/section-030/module-02/course-01-deployment-service-ingress-and-base-urls.md
+  prompt: Users open `https://portal.example.com`, but `app.baseUrl` is `http://localhost:3000`.
+    What is the likely effect?
+  options:
+  - id: a
+    text: Generated links and browser requests use the wrong address, and the CORS
+      origin check can reject requests.
+    explanation: Correct. `app.baseUrl`, `backend.baseUrl` and the CORS origin must
+      match the address that users open.
+  - id: b
+    text: Nothing, because the setting is only a label.
+    explanation: The frontend and the backend use the setting to build addresses and
+      to check origins.
+  - id: c
+    text: The Ingress rewrites the setting automatically.
+    explanation: An Ingress does not change the application configuration.
+  - id: d
+    text: The pod is restarted by the liveness probe.
+    explanation: A probe does not check the base URL.
+  correct_option: a
+  explanation: The base URLs and the CORS origin must match the public address.
+- id: ats070-030-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish the readiness probe from the liveness probe
+  source_readings:
+  - sections/section-030/module-02/course-02-secrets-and-health-probes.md
+  prompt: The readiness probe of a Backstage pod fails, while the liveness probe passes.
+    What does Kubernetes do?
+  options:
+  - id: a
+    text: It restarts the container.
+    explanation: A failed liveness probe causes a restart, not a failed readiness
+      probe.
+  - id: b
+    text: It deletes the Deployment.
+    explanation: Probes never delete a Deployment.
+  - id: c
+    text: It keeps the container running and removes the pod from the Service endpoints.
+    explanation: Correct. A failed readiness probe only stops traffic to the pod.
+  - id: d
+    text: It changes the Secret.
+    explanation: Probes do not change Secrets.
+  correct_option: c
+  explanation: Readiness controls where traffic goes. Liveness controls restarts.
+- id: ats070-030-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain what a changed Secret does to running pods
+  source_readings:
+  - sections/section-030/module-02/course-02-secrets-and-health-probes.md
+  prompt: A GitHub token in a Secret loaded with `envFrom` is rotated. The running
+    Backstage pod still uses the old token. What fixes this?
+  options:
+  - id: a
+    text: Wait, because the pod reloads its environment every minute.
+    explanation: A running process does not receive new environment variables.
+  - id: b
+    text: Delete the Service.
+    explanation: The Service does not hold the token.
+  - id: c
+    text: Increase `maxSurge`.
+    explanation: This changes the release step size and not the environment of existing
+      pods.
+  - id: d
+    text: Restart the Deployment, for example with `kubectl rollout restart`, so new
+      pods read the new value.
+    explanation: Correct. Environment variables are set when the container starts.
+  correct_option: d
+  explanation: Environment variables are fixed at container start, so new pods are
+    needed.
+- id: ats070-030-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Separate availability from feature health after a release
+  source_readings:
+  - sections/section-030/module-02/course-03-rolling-releases-and-feature-health.md
+  prompt: A rollout of Backstage finishes, all pods are ready and the readiness endpoint
+    passes. Users report that the catalog is empty. What does this show?
+  options:
+  - id: a
+    text: The rollout did not finish.
+    explanation: The pods are ready, so the rollout finished.
+  - id: b
+    text: Availability and feature health are separate, so a ready pod can still have
+      a broken feature.
+    explanation: Correct. Readiness describes the state of the backend, not each feature.
+  - id: c
+    text: The readiness probe is wrong, because a ready pod must have a full catalog.
+    explanation: The probe is not designed to check catalog content.
+  - id: d
+    text: "`kubectl rollout undo` restores the database content."
+    explanation: A rollback restores the pod template and does not restore data.
+  correct_option: b
+  explanation: A finished rollout proves availability only, and features need their
+    own checks.

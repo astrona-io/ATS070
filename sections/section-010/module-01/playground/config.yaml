@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Framework Features, Integrations And Application Ownership (PLAYGROUND) - a clean sandbox. It starts a kind cluster with one
+# Backstage Deployment (public image, configuration from a ConfigMap, SQLite in
+# memory) and stays running. No task, no grading, no `astrona submit`.
+# Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-070-playground-010-01
+  docs:
+    guide: docs/overview.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/backstage/backstage:1.55.2
+      - curlimages/curl:8.22.0
+  portForwards:
+    - name: backstage
+      resource: svc/backstage
+      namespace: backstage
+      hostPort: 7007
+      targetPort: 7007
+      scheme: http
+      description: "Backstage backend and portal on http://127.0.0.1:7007"
+
+bootstrap:
+  manifests:
+    - name: backstage
+      type: file
+      source: manifests/backstage.yaml
+  waitFor:
+    - resource: deploy/backstage
+      namespace: backstage
+
+teardown:
+  keepCluster: false

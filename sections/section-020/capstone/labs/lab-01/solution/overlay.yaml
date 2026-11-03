@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backstage-app-config-production
+  namespace: backstage
+data:
+  app-config.production.yaml: |
+    organization:
+      name: Starfleet Production
+    backend:
+      cors:
+        methods: [GET]

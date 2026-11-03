@@ -1,0 +1,69 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Secrets, Probes And A Safe Rollout (LAB). Starting state: Backstage with a token written in the Deployment, no probes and one replica. Graded against the live cluster. Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-070-lab-030-02
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/backstage/backstage:1.55.2
+      - curlimages/curl:8.22.0
+      - postgres:16-alpine
+
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the namespace, Backstage with a plain-text token, no probes and one replica
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+    - name: wait-for-settled
+      description: Wait until the rollout has finished
+      type: file
+      source: testing/wait-for-settled.sh
+
+validation:
+  scripts:
+    - name: token-in-secret
+      description: The Secret backstage-secrets holds GITHUB_TOKEN with the existing value
+      type: file
+      source: validation/validate-token-in-secret.sh
+      hint: Create Secret backstage-secrets in the namespace backstage with the key GITHUB_TOKEN. Use the value that the Deployment carries now.
+    - name: token-not-plain
+      description: The Deployment reads the token from the Secret and no longer contains it
+      type: file
+      source: validation/validate-token-not-plain.sh
+      hint: Remove the env entry GITHUB_TOKEN and add envFrom with secretRef backstage-secrets.
+    - name: probes-configured
+      description: Readiness and liveness probes use the Backstage health endpoints
+      type: file
+      source: validation/validate-probes-configured.sh
+      hint: Use httpGet probes on /.backstage/health/v1/readiness and /.backstage/health/v1/liveness, port http.
+    - name: replicas-rolling
+      description: Two replicas and a rolling update with maxUnavailable 0
+      type: file
+      source: validation/validate-replicas-rolling.sh
+      hint: Set spec.replicas to 2 and strategy RollingUpdate with maxUnavailable 0 (maxSurge 1).
+    - name: backstage-available
+      description: Two ready Backstage pods run the changed template
+      type: file
+      source: validation/validate-backstage-available.sh
+      hint: Wait for the rollout; both new pods must be ready. A liveness probe that starts too early restarts the pod.
+
+teardown:
+  keepCluster: false

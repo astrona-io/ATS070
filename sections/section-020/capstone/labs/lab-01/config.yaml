@@ -1,0 +1,87 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Configure Backstage Capstone (LAB): layered files, an override and a
+# secret reference in one deployment. Graded against the live cluster.
+# Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-070-capstone-020
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/backstage/backstage:1.55.2
+      - curlimages/curl:8.22.0
+
+# Starting state: Backstage with one mounted file that holds a plain-text
+# example token. No production overlay, no override, no Secret.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create Backstage with a plain-text example token in its ConfigMap
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+    - name: wait-for-settled
+      description: Wait until the old pod is gone
+      type: file
+      source: testing/wait-for-settled.sh
+
+validation:
+  scripts:
+    - name: secret-created
+      description: The Secret portal-secrets holds the new token in the key SCM_TOKEN
+      type: file
+      source: validation/validate-secret-rotated.sh
+      hint: Create the Secret in the namespace backstage with the key SCM_TOKEN and the new token from the task.
+    - name: configmap-clean
+      description: No ConfigMap holds token text and the file refers to ${SCM_TOKEN}
+      type: file
+      source: validation/validate-configmap-clean.sh
+      hint: Replace the token under integrations.github with ${SCM_TOKEN} in backstage-app-config. Keep every other key. Check every ConfigMap, also the new one.
+    - name: deployment-uses-secret
+      description: The container gets SCM_TOKEN from the Secret and not as a literal value
+      type: file
+      source: validation/validate-deployment-uses-secret.sh
+      hint: Use valueFrom.secretKeyRef or envFrom with secretRef to portal-secrets.
+    - name: production-overlay
+      description: The production overlay is mounted and is the last --config flag
+      type: file
+      source: validation/validate-production-overlay.sh
+      hint: The file path is /etc/backstage-production/app-config.production.yaml. Write methods as a one-item list. The last flag wins.
+    - name: title-override
+      description: APP_CONFIG_app_title is set on the container
+      type: file
+      source: validation/validate-title-override.sh
+      hint: The variable name is APP_CONFIG_app_title and the value is Starfleet Portal Live.
+    - name: running-pod
+      description: The running pod has the new token, the overlay file and the override
+      type: file
+      source: validation/validate-running-pod-files.sh
+      hint: The process reads files and variables at startup. Wait for the new pod to be running before you submit.
+    - name: running-pod-token
+      description: The running pod has SCM_TOKEN with the new value
+      type: file
+      source: validation/validate-running-pod-token.sh
+      hint: Restart the Deployment after the Secret and the reference exist.
+    - name: backstage-available
+      description: Backstage is available with its original image and flags
+      type: file
+      source: validation/validate-backstage-available.sh
+      hint: Change the existing objects. Do not delete the Deployment or change its image.
+
+teardown:
+  keepCluster: false

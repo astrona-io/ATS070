@@ -1,0 +1,78 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Client-Server Architecture Capstone (LAB). Graded against the live cluster. Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-070-capstone-040
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/backstage/backstage:1.55.2
+      - curlimages/curl:8.22.0
+
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: "Start Backstage with development addresses, no authentication policy and a literal token"
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+    - name: wait-for-settled
+      description: Wait until the restarted pod is ready
+      type: file
+      source: testing/wait-for-settled.sh
+
+validation:
+  scripts:
+    - name: base-urls-and-cors
+      description: "app.baseUrl, backend.baseUrl and backend.cors.origin are the proxy address"
+      type: file
+      source: validation/validate-base-urls-and-cors.sh
+      hint: "All three values are https://portal.starfleet.example. The origin has no path."
+    - name: default-auth-policy-enabled
+      description: "The default auth policy is no longer disabled"
+      type: file
+      source: validation/validate-default-auth-policy-enabled.sh
+      hint: "Remove dangerouslyDisableDefaultAuthPolicy from backend.auth."
+    - name: permission-enabled
+      description: "The permission framework is enabled"
+      type: file
+      source: validation/validate-permission-enabled.sh
+      hint: "Add permission.enabled: true."
+    - name: ci-token-from-secret
+      description: "The CI token is a placeholder fed from the Secret and the literal token is gone"
+      type: file
+      source: validation/validate-ci-token-from-secret.sh
+      hint: "Replace the literal token with ${CI_TOKEN}, remove the literal from the ConfigMap and add env CI_TOKEN with secretKeyRef portal-secrets/CI_TOKEN. Keep the subject and the catalog restriction."
+    - name: ports-unchanged
+      description: "The port inside the cluster is unchanged"
+      type: file
+      source: validation/validate-ports-unchanged.sh
+      hint: "The proxy address changes, the port inside the cluster stays 7007."
+    - name: restarted-and-ready
+      description: "Backstage runs with the changed configuration"
+      type: file
+      source: validation/validate-restarted-and-ready.sh
+      hint: "Restart the Deployment and wait for the rollout."
+    - name: unauthenticated-rejected
+      description: "A request without credentials to the catalog is not answered with 200"
+      type: file
+      source: validation/validate-unauthenticated-rejected.sh
+      hint: "The backend rejects it only after the default auth policy is active and the new pod runs."
+
+teardown:
+  keepCluster: false

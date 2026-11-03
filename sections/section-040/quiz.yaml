@@ -1,0 +1,261 @@
+# Knowledge check for section 040. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats070-040
+course_id: ATS070
+exam_code: CBA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-040
+  title: Understand Backstage client-server architecture
+questions:
+- id: ats070-040-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Describe what runs in the browser and what runs in the backend
+  source_readings:
+  - sections/section-040/module-01/course-01-browser-app-backend-process-and-request-path.md
+  prompt: A user opens the catalog page of the portal. Which component queries the
+    database for the entities?
+  options:
+  - id: a
+    text: The backend plugin for the catalog, in the Node.js backend process.
+    explanation: Correct. The backend plugin owns the data and queries the database.
+  - id: b
+    text: The frontend app, running in the browser.
+    explanation: The browser app calls an API. It never reads the database.
+  - id: c
+    text: The reverse proxy in front of Backstage.
+    explanation: The proxy only forwards requests.
+  - id: d
+    text: The CORS header of the response.
+    explanation: CORS controls which pages may read a response. It does not fetch
+      data.
+  correct_option: a
+  explanation: The frontend app calls an HTTP API and the backend plugin queries the
+    database.
+- id: ats070-040-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain visibility of configuration keys
+  source_readings:
+  - sections/section-040/module-01/course-01-browser-app-backend-process-and-request-path.md
+  prompt: Which statement about configuration visibility is correct?
+  options:
+  - id: a
+    text: Keys with visibility `secret` are sent to the browser in encrypted form.
+    explanation: Secret keys stay in the backend and are redacted from logs.
+  - id: b
+    text: The default visibility is `frontend`.
+    explanation: The default is `backend`.
+  - id: c
+    text: Only keys with visibility `frontend` are sent to the browser, and the default
+      is `backend`.
+    explanation: Correct. Keys without a declared visibility stay on the server.
+  - id: d
+    text: All keys of `app-config.yaml` are sent to the browser.
+    explanation: The backend only hands over `frontend` keys.
+  correct_option: c
+  explanation: Only `frontend` keys reach the browser, and the default visibility
+    is `backend`.
+- id: ats070-040-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Set the base URL, listen and CORS keys for a reverse proxy
+  source_readings:
+  - sections/section-040/module-01/course-02-base-urls-listen-cors-and-reverse-proxy.md
+  prompt: Backstage runs on port 7007 in a pod. A reverse proxy serves the portal
+    and the API at `https://portal.starfleet.example`. Which configuration is correct?
+  options:
+  - id: a
+    text: "`backend.cors.origin` is `*` so that CORS never matters."
+    explanation: Set the origin of the page exactly instead of opening it to every
+      site.
+  - id: b
+    text: "`app.baseUrl` and `backend.baseUrl` and `backend.cors.origin` are `https://portal.starfleet.example`,
+      and `backend.listen.port` stays 7007."
+    explanation: Correct. The public keys describe the outside address and the listen
+      port describes the process.
+  - id: c
+    text: "`backend.listen.port` is set to 443 so that it matches the public address."
+    explanation: The process can keep 7007. The proxy handles port 443.
+  - id: d
+    text: "`backend.baseUrl` is `http://localhost:7007` because the process listens
+      there."
+    explanation: "`backend.baseUrl` is the address clients use, not the address of
+      the process."
+  correct_option: b
+  explanation: Public address keys use the public origin, and the listen port stays
+    the process port.
+- id: ats070-040-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain CORS
+  source_readings:
+  - sections/section-040/module-01/course-02-base-urls-listen-cors-and-reverse-proxy.md
+  prompt: A request to the backend works with `curl` but the browser reports a CORS
+    error. What is the most likely cause?
+  options:
+  - id: a
+    text: The backend process is not running.
+    explanation: Then `curl` would fail too.
+  - id: b
+    text: The Secret is missing from the Deployment.
+    explanation: A missing Secret does not cause a browser-only error.
+  - id: c
+    text: The plugin ID is wrong.
+    explanation: A wrong route would fail for `curl` too.
+  - id: d
+    text: "`backend.cors.origin` does not match the origin of the page."
+    explanation: Correct. The browser enforces CORS and `curl` ignores it.
+  correct_option: d
+  explanation: CORS is a browser rule. A mismatch between the page origin and `backend.cors.origin`
+    blocks only browsers.
+- id: ats070-040-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Change configuration and apply it
+  source_readings:
+  - sections/section-040/module-01/course-02-base-urls-listen-cors-and-reverse-proxy.md
+  prompt: You edit the ConfigMap `backstage-app-config` that holds the Backstage configuration
+    file. The running pod still behaves as before. Why?
+  options:
+  - id: a
+    text: The listen port must be changed first.
+    explanation: The port is unrelated to reloading configuration.
+  - id: b
+    text: The reverse proxy caches the file.
+    explanation: The proxy does not read the ConfigMap.
+  - id: c
+    text: Backstage reads its configuration files at startup, so the pod needs a restart.
+    explanation: Correct. Run `kubectl rollout restart` and wait for the new pod.
+  - id: d
+    text: ConfigMaps never change a pod.
+    explanation: A restart makes the pod read the new content.
+  correct_option: c
+  explanation: The process reads configuration once at startup.
+- id: ats070-040-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain plugin routes and discovery
+  source_readings:
+  - sections/section-040/module-01/course-03-plugin-routes-discovery-and-error-states.md
+  prompt: Which statement about backend plugin routes and discovery is correct?
+  options:
+  - id: a
+    text: Each backend plugin is mounted under `/api/<pluginId>`, and discovery turns
+      a plugin ID into a base URL.
+    explanation: Correct.
+  - id: b
+    text: Each plugin listens on its own port, and discovery returns that port.
+    explanation: Plugins share one HTTP server.
+  - id: c
+    text: Discovery returns the credentials of the plugin.
+    explanation: Discovery returns addresses, not credentials.
+  - id: d
+    text: The frontend must hard-code the plugin URL.
+    explanation: The discovery API removes the need.
+  correct_option: a
+  explanation: Routes follow `/api/<pluginId>` and discovery resolves the base URL.
+- id: ats070-040-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish error and empty states
+  source_readings:
+  - sections/section-040/module-01/course-03-plugin-routes-discovery-and-error-states.md
+  prompt: The catalog table is empty and the request returned status 200 with an empty
+    list. What does this show?
+  options:
+  - id: a
+    text: The credentials were missing.
+    explanation: Missing credentials do not return a 200 with a list.
+  - id: b
+    text: The route does not exist.
+    explanation: A missing route does not return a 200 with a list.
+  - id: c
+    text: The backend crashed.
+    explanation: A crashed backend does not answer with 200.
+  - id: d
+    text: The request worked and returned no items, which is an empty state and not
+      an error.
+    explanation: Correct. Check the catalog locations next.
+  correct_option: d
+  explanation: A 200 with no items is an empty state.
+- id: ats070-040-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: State what the default auth policy does
+  source_readings:
+  - sections/section-040/module-02/course-01-sign-in-identity-and-service-auth.md
+  prompt: What does the default auth policy of the Backstage backend do?
+  options:
+  - id: a
+    text: It enables the permission framework.
+    explanation: The framework is enabled with `permission.enabled`.
+  - id: b
+    text: It requires credentials on every plugin route unless a plugin opens a route
+      with `addAuthPolicy`.
+    explanation: Correct.
+  - id: c
+    text: It lets every caller read all routes until a permission policy exists.
+    explanation: Authentication comes before authorization and rejects anonymous callers.
+  - id: d
+    text: It hides frontend keys from the browser.
+    explanation: That is configuration visibility.
+  correct_option: b
+  explanation: Credentials are required on every route by default.
+- id: ats070-040-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Configure external access with an environment variable token
+  source_readings:
+  - sections/section-040/module-02/course-01-sign-in-identity-and-service-auth.md
+  prompt: A CI pipeline needs read access to the catalog only. Which configuration
+    fits best?
+  options:
+  - id: a
+    text: "`dangerouslyDisableDefaultAuthPolicy: true`."
+    explanation: That removes authentication for everyone.
+  - id: b
+    text: A `frontend` key that the pipeline reads from the browser bundle.
+    explanation: Pipelines call the API, and a token in a `frontend` key reaches every
+      browser.
+  - id: c
+    text: 'An `externalAccess` entry of `type: static` with `token: ${CI_TOKEN}` and
+      an `accessRestrictions` entry for the plugin `catalog`.'
+    explanation: Correct. The token comes from the environment and the restriction
+      limits the plugin.
+  - id: d
+    text: The literal token in the ConfigMap with no restriction.
+    explanation: A literal token in a ConfigMap is a finding, and no restriction opens
+      every plugin.
+  correct_option: c
+  explanation: Use a static entry with a placeholder token and an access restriction.
+- id: ats070-040-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Describe where permission decisions are enforced
+  source_readings:
+  - sections/section-040/module-02/course-02-permission-decisions-on-the-server.md
+  prompt: "`permission.enabled` is `true` and no custom policy is installed. A signed-in
+    user requests a catalog entity. What happens?"
+  options:
+  - id: a
+    text: The request fails because enabling the framework requires restarting the
+      browser.
+    explanation: Browsers play no part.
+  - id: b
+    text: The default policy allows the request, so the user receives the entity.
+    explanation: Correct. The default policy allows everything.
+  - id: c
+    text: The permission backend denies every request until a rule exists.
+    explanation: The default policy allows.
+  - id: d
+    text: The frontend app decides and the backend ignores the result.
+    explanation: The plugin backend enforces.
+  correct_option: b
+  explanation: The framework only restricts once a policy has rules; the plugin backend
+    enforces the decision.

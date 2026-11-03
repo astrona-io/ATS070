@@ -1,0 +1,93 @@
+# Shared starting state for every ATS070 playground and lab (copy, then adapt).
+# Backstage from the public image, configuration from a ConfigMap, SQLite in memory.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: backstage
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backstage-app-config
+  namespace: backstage
+data:
+  app-config.lab.yaml: |
+    app:
+      title: Starfleet Portal
+      baseUrl: http://localhost:7007
+    organization:
+      name: Starfleet
+    backend:
+      baseUrl: http://localhost:7007
+      listen:
+        port: 7007
+      cors:
+        origin: http://localhost:7007
+      database:
+        client: better-sqlite3
+        connection: ':memory:'
+    permission:
+      enabled: true
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backstage
+  namespace: backstage
+  labels:
+    app: backstage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backstage
+  template:
+    metadata:
+      labels:
+        app: backstage
+    spec:
+      containers:
+        - name: backstage
+          image: ghcr.io/backstage/backstage:1.55.2
+          command: ["node", "packages/backend"]
+          args:
+            - "--config"
+            - "app-config.yaml"
+            - "--config"
+            - "/etc/backstage/app-config.lab.yaml"
+          env:
+            - name: CI_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: portal-secrets
+                  key: CI_TOKEN
+          ports:
+            - name: http
+              containerPort: 7007
+          readinessProbe:
+            httpGet:
+              path: /.backstage/health/v1/readiness
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 5
+          volumeMounts:
+            - name: app-config
+              mountPath: /etc/backstage
+              readOnly: true
+      volumes:
+        - name: app-config
+          configMap:
+            name: backstage-app-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backstage
+  namespace: backstage
+spec:
+  selector:
+    app: backstage
+  ports:
+    - name: http
+      port: 7007
+      targetPort: http

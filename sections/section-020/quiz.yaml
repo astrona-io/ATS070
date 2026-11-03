@@ -1,0 +1,268 @@
+# Knowledge check for section 020. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats070-020
+course_id: ATS070
+exam_code: CBA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-020
+  title: Configure Backstage
+questions:
+- id: ats070-020-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Name the configuration files Backstage reads and their order
+  source_readings:
+  - sections/section-020/module-01/course-01-app-configuration-files-and-config-order.md
+  prompt: A container starts with `node packages/backend --config /etc/app/prod.yaml`
+    and no other `--config` flag. Which file does Backstage load?
+  options:
+  - id: a
+    text: Only `/etc/app/prod.yaml`.
+    explanation: Correct. When any `--config` flag is given, the default `app-config.yaml`
+      files are not loaded.
+  - id: b
+    text: "`app-config.yaml` first and then `/etc/app/prod.yaml`."
+    explanation: The default files are skipped as soon as one `--config` flag exists.
+      Name `app-config.yaml` with its own flag to load it.
+  - id: c
+    text: "`app-config.local.yaml` and then `/etc/app/prod.yaml`."
+    explanation: Local files belong to the default list, which is not used when a
+      flag is given.
+  - id: d
+    text: No file, because the path is not relative to the image.
+    explanation: A flag can name any local path or URL. The path is relative to the
+      working directory of the process.
+  correct_option: a
+  explanation: With `--config` flags, only the named files load, and the last flag
+    has the highest priority.
+- id: ats070-020-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Name the configuration files Backstage reads and the order in
+    which later sources replace earlier ones
+  source_readings:
+  - sections/section-020/module-01/course-01-app-configuration-files-and-config-order.md
+  prompt: A Deployment passes `--config app-config.yaml --config /etc/a/one.yaml --config
+    /etc/a/two.yaml`. Both extra files set `app.title`. Which title is effective?
+  options:
+  - id: a
+    text: The one from `app-config.yaml`.
+    explanation: The base file is first, so it has the lowest priority.
+  - id: b
+    text: The one from `/etc/a/one.yaml`.
+    explanation: Another file comes after it, so it is replaced.
+  - id: c
+    text: The one from `/etc/a/two.yaml`.
+    explanation: Correct. The last `--config` flag has the highest priority.
+  - id: d
+    text: Backstage reports a conflict and stops.
+    explanation: Backstage does not treat a repeated key as a conflict. It replaces
+      the value.
+  correct_option: c
+  explanation: The last flag wins for every key that more than one file sets.
+- id: ats070-020-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Predict the merged result when files set the same object or
+    array
+  source_readings:
+  - sections/section-020/module-01/course-02-merge-rules-arrays-and-null.md
+  prompt: 'The base file sets `backend.cors.methods: [GET, POST, PUT]`. The overlay,
+    with higher priority, sets `backend.cors.methods: [DELETE]`. What is the effective
+    value?'
+  options:
+  - id: a
+    text: "`[GET, POST, PUT, DELETE]`."
+    explanation: Arrays are never joined.
+  - id: b
+    text: "`[DELETE]`."
+    explanation: Correct. An array from the later source replaces the whole earlier
+      array.
+  - id: c
+    text: "`[GET, POST, PUT]`."
+    explanation: The later source has priority, so the base array is not kept.
+  - id: d
+    text: An error, because both files set the same list.
+    explanation: Setting the same key twice is allowed. The later value replaces the
+      earlier one.
+  correct_option: b
+  explanation: Arrays are replaced with all of their contents, never extended.
+- id: ats070-020-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Predict the merged result when files set the same object
+  source_readings:
+  - sections/section-020/module-01/course-02-merge-rules-arrays-and-null.md
+  prompt: The base file sets `app.title` and `app.baseUrl`. The overlay sets only
+    `app.baseUrl`. What is effective for `app.title`?
+  options:
+  - id: a
+    text: Nothing, because the overlay replaces the `app` object.
+    explanation: Objects are merged deeply, not replaced.
+  - id: b
+    text: The title from the base file.
+    explanation: Correct. Keys that only one file sets stay, and objects merge key
+      by key.
+  - id: c
+    text: An empty string.
+    explanation: Nothing in the overlay sets an empty string.
+  - id: d
+    text: The value of `app.baseUrl`.
+    explanation: Keys are independent. One key never takes the value of another.
+  correct_option: b
+  explanation: Objects are merged deeply, so a key that only the base file sets stays.
+- id: ats070-020-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain the meaning of null in a configuration file
+  source_readings:
+  - sections/section-020/module-01/course-02-merge-rules-arrays-and-null.md
+  prompt: 'The base file defines `backend.cors`. An overlay with higher priority sets
+    `backend.cors: null`. What does this mean for the application?'
+  options:
+  - id: a
+    text: "`backend.cors` is an empty object."
+    explanation: "`null` is not an empty object."
+  - id: b
+    text: "`backend.cors` is explicitly absent."
+    explanation: Correct. A `null` value is treated as an explicit absence of configuration.
+  - id: c
+    text: The base value is kept because `null` has no content.
+    explanation: "`null` does have a meaning. It removes the value."
+  - id: d
+    text: Backstage stops, because `null` is not valid YAML.
+    explanation: "`null` is valid YAML and Backstage defines its meaning."
+  correct_option: b
+  explanation: "`null` marks a setting as explicitly absent, which differs from an
+    empty string and from leaving the key out."
+- id: ats070-020-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Use APP_CONFIG_ environment variables and say which source wins
+  source_readings:
+  - sections/section-020/module-01/course-03-environment-overrides-and-substitutions.md
+  prompt: 'The mounted file sets `organization.name: Starfleet`. The container has
+    the variable `APP_CONFIG_organization_name=Starfleet Command`. Which value does
+    Backstage use?'
+  options:
+  - id: a
+    text: "`Starfleet`, because files have priority over variables."
+    explanation: Variables have the highest priority of all sources.
+  - id: b
+    text: "`Starfleet Command`."
+    explanation: Correct. `APP_CONFIG_` variables override every file.
+  - id: c
+    text: Both, joined with a space.
+    explanation: Primitive values are replaced, not joined.
+  - id: d
+    text: Neither, because the key name has an underscore.
+    explanation: The underscores in the variable name stand for dots in the key path.
+  correct_option: b
+  explanation: "`APP_CONFIG_` variables have the highest priority and replace the
+    value from every file."
+- id: ats070-020-q07
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Use APP_CONFIG_ environment variables and parse their values
+  source_readings:
+  - sections/section-020/module-01/course-03-environment-overrides-and-substitutions.md
+  prompt: A variable `APP_CONFIG_app_support_open=true` is set. How does Backstage
+    read its value?
+  options:
+  - id: a
+    text: As the string `"true"`, always.
+    explanation: The value is parsed as JSON first.
+  - id: b
+    text: As the boolean `true`, because the value parses as JSON.
+    explanation: Correct. The value falls back to a string only when JSON parsing
+      fails.
+  - id: c
+    text: As a number.
+    explanation: "`true` is a JSON boolean, not a number."
+  - id: d
+    text: It is ignored, because the variable name has a lowercase `o`.
+    explanation: The name is valid. It is not ignored.
+  correct_option: b
+  explanation: The value is parsed as JSON and used as a string only when parsing
+    fails. A string `"false"` needs JSON quotes.
+- id: ats070-020-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish backend-only values from values visible to the browser
+  source_readings:
+  - sections/section-020/module-02/course-02-visibility-what-reaches-the-browser.md
+  prompt: A schema field has no `@visibility` annotation. Who can read the value?
+  options:
+  - id: a
+    text: Every visitor of the portal.
+    explanation: Only values marked `frontend` reach the browser.
+  - id: b
+    text: Only the backend, because `backend` is the default.
+    explanation: Correct. Without an annotation, the value stays on the server.
+  - id: c
+    text: Only the frontend.
+    explanation: The backend can always read the configuration.
+  - id: d
+    text: Nobody, because it is invalid.
+    explanation: A missing annotation is valid and means `backend`.
+  correct_option: b
+  explanation: 'The default visibility is `backend`: the value is available only on
+    the server.'
+- id: ats070-020-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Decide which settings may be visible to the browser and which
+    must stay on the server
+  source_readings:
+  - sections/section-020/module-02/course-02-visibility-what-reaches-the-browser.md
+  prompt: A developer marks the field `integrations.github[].token` with `@visibility
+    frontend` so that a browser component can call GitHub. What is the consequence?
+  options:
+  - id: a
+    text: Nothing, because the browser is trusted.
+    explanation: Every visitor can read frontend values.
+  - id: b
+    text: The token is delivered to every visitor who loads the portal.
+    explanation: Correct. A `frontend` value is public to the audience of the portal.
+  - id: c
+    text: The token is encrypted in the browser.
+    explanation: Visibility does not encrypt anything.
+  - id: d
+    text: Backstage rejects the annotation for a token.
+    explanation: Backstage does not judge the content of a field.
+  correct_option: b
+  explanation: Frontend values are published to the browser. A token belongs behind
+    a backend route and stays `secret`.
+- id: ats070-020-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Deliver a secret to Backstage through a Kubernetes Secret and
+    rotate it
+  source_readings:
+  - sections/section-020/module-02/course-03-secret-delivery-and-rotation.md
+  prompt: A team updates the Kubernetes Secret that holds `GITHUB_TOKEN` for a Backstage
+    Deployment. The running pod still uses the old token. Why, and what is the next
+    step?
+  options:
+  - id: a
+    text: The Secret was not saved. Apply it again.
+    explanation: The Secret object is updated. The pod is the problem.
+  - id: b
+    text: The environment of a running container does not change. Restart the pods
+      and revoke the old token.
+    explanation: Correct. Backstage reads its environment and files at startup.
+  - id: c
+    text: Backstage caches tokens for 24 hours. Wait.
+    explanation: Nothing in this setup caches the token for a fixed time. The process
+      holds the value it started with.
+  - id: d
+    text: The `${GITHUB_TOKEN}` reference must be replaced with the new token.
+    explanation: A reference is the right design. Only the pod must restart.
+  correct_option: b
+  explanation: Rotation means updating the Secret, restarting the pods and revoking
+    the old credential.

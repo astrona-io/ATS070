@@ -1,0 +1,73 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Secure The Backend Routes And Add A CI Caller (LAB). Graded against the live cluster. Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-070-lab-040-02
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/backstage/backstage:1.55.2
+      - curlimages/curl:8.22.0
+
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: "Start Backstage with the default auth policy disabled and a Secret for the CI token"
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+    - name: wait-for-settled
+      description: Wait until the restarted pod is ready
+      type: file
+      source: testing/wait-for-settled.sh
+
+validation:
+  scripts:
+    - name: default-auth-policy-enabled
+      description: "The default auth policy is no longer disabled"
+      type: file
+      source: validation/validate-default-auth-policy-enabled.sh
+      hint: "Remove backend.auth.dangerouslyDisableDefaultAuthPolicy (or set it to false) in the ConfigMap."
+    - name: permission-enabled
+      description: "The permission framework is enabled"
+      type: file
+      source: validation/validate-permission-enabled.sh
+      hint: "Add a permission block with enabled: true at the top level of the configuration file."
+    - name: ci-access-configured
+      description: "The CI caller has a static external access entry limited to the catalog"
+      type: file
+      source: validation/validate-ci-access-configured.sh
+      hint: "Add backend.auth.externalAccess with type static, subject starfleet-ci, token ${CI_TOKEN} and an accessRestrictions entry for plugin catalog."
+    - name: token-from-secret
+      description: "The token reaches the process from the Secret, not from the ConfigMap"
+      type: file
+      source: validation/validate-token-from-secret.sh
+      hint: "Add an env entry CI_TOKEN with a secretKeyRef to portal-secrets, key CI_TOKEN, to the Deployment. The ConfigMap must hold only ${CI_TOKEN}."
+    - name: restarted-and-ready
+      description: "Backstage runs with the changed configuration"
+      type: file
+      source: validation/validate-restarted-and-ready.sh
+      hint: "Restart the Deployment after you change the ConfigMap or the environment, then wait for the rollout."
+    - name: unauthenticated-rejected
+      description: "A request without credentials to the catalog is not answered with 200"
+      type: file
+      source: validation/validate-unauthenticated-rejected.sh
+      hint: "Once the default auth policy is active the backend rejects a request without credentials. Check that the new pod is running."
+
+teardown:
+  keepCluster: false

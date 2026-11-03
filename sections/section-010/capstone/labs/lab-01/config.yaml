@@ -1,0 +1,72 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Understand The Backstage Framework Capstone (LAB): repair, configure and
+# document a portal. Graded against the live cluster. Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-070-capstone-010
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/backstage/backstage:1.55.2
+      - curlimages/curl:8.22.0
+
+# Starting state: a portal that does not start (the ConfigMap key does not
+# match the --config path), a generic title, a catalog that accepts Template
+# and no owner. The failures are left in place on purpose.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the failing Backstage Deployment
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+    - name: wait-for-settled
+      description: Wait until one ready pod is left
+      type: file
+      source: testing/wait-for-settled.sh
+
+validation:
+  scripts:
+    - name: portal-ready
+      description: The Deployment has a ready replica and the readiness endpoint answers 200
+      type: file
+      source: validation/validate-portal-ready.sh
+      hint: Read the pod log and compare the path in the --config argument with the file that the ConfigMap really provides.
+    - name: workload-unchanged
+      description: The Deployment keeps its image and at least one replica
+      type: file
+      source: validation/validate-workload-unchanged.sh
+      hint: Fix the configuration. Do not change the image and do not scale down.
+    - name: configuration
+      description: Title and catalog rule are set, Template is not allowed, and the ready pod mounts the title
+      type: file
+      source: validation/validate-configuration.sh
+      hint: Set app.title and use a catalog.rules allow list with Component, System, API, Resource and Location only. Restart so that the pod reads the file.
+    - name: owner-annotation
+      description: The Deployment has the owner annotation platform-team
+      type: file
+      source: validation/validate-owner-annotation.sh
+      hint: The annotation key is portal.starfleet.example/owner and it goes on the Deployment.
+    - name: responsibilities-record
+      description: The ConfigMap portal-responsibilities has owner, database, identity and release
+      type: file
+      source: validation/validate-responsibilities-record.sh
+      hint: Four keys. The database value must name PostgreSQL. The release is the image tag.
+
+teardown:
+  keepCluster: false

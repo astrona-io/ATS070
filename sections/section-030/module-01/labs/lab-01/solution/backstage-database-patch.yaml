@@ -1,0 +1,13 @@
+spec:
+  template:
+    spec:
+      containers:
+        - name: backstage
+          envFrom:
+            - secretRef:
+                name: postgres-secrets
+          env:
+            - name: POSTGRES_HOST
+              value: postgres
+            - name: POSTGRES_PORT
+              value: "5432"

@@ -1,3 +1,5 @@
 # Introduction
 
-This introduction explains the Backstage Infrastructure course, reading method and author review. The domain represents 22% of Certified Backstage Associate (CBA) and belongs to ATP014. Read the welcome, requirements and authoring explanation before the technical sections.
+This introduction explains how to use the Backstage Infrastructure course. Welcome To The Course describes the audience, learning outcomes and course layout, including the playgrounds, labs and knowledge checks. Get Your Machine Ready explains the tools to install and the `astrona` commands used every day. How This Course Is Made describes author checks, contributions and the license.
+
+The course starts with the Backstage framework.

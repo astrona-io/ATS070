@@ -1,0 +1,307 @@
+# Final domain knowledge check across all four sections.
+---
+schema_version: 1
+kind: question_bank
+id: ats070-final
+course_id: ATS070
+exam_code: CBA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: domain
+  id: backstage-infrastructure
+  title: Backstage Infrastructure
+questions:
+- id: ats070-final-q01
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain Backstage as an assembled developer portal framework
+  source_readings:
+  - sections/section-010/README.md
+  prompt: What best describes Backstage?
+  options:
+  - id: a
+    text: A finished hosted portal that needs no code or configuration.
+    explanation: Backstage is a framework. The organization assembles, configures,
+      builds and hosts its own application.
+  - id: b
+    text: A framework from which an organization assembles and runs its own developer
+      portal.
+    explanation: Correct. The organization chooses plugins, configures them and operates
+      the result.
+  - id: c
+    text: A Kubernetes controller that deploys every service automatically.
+    explanation: Backstage shows and starts work for software. Deployment controllers
+      stay separate systems.
+  - id: d
+    text: A container registry for built images.
+    explanation: A registry stores images. Backstage does not.
+  correct_option: b
+  explanation: Correct. The organization chooses plugins, configures them and operates
+    the result.
+- id: ats070-final-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Identify what remains the responsibility of the adopting organization
+  source_readings:
+  - sections/section-010/README.md
+  prompt: Which task stays with the organization that adopts Backstage?
+  options:
+  - id: a
+    text: Choosing the authorization policy and hosting the application.
+    explanation: Correct. The framework supplies mechanisms, but the organization
+      decides the policy and runs the deployment.
+  - id: b
+    text: Writing the Backstage framework core.
+    explanation: The Backstage project maintains the core.
+  - id: c
+    text: Publishing the container image `ghcr.io/backstage/backstage`.
+    explanation: The project publishes that image.
+  - id: d
+    text: Nothing, because the defaults are production ready.
+    explanation: Defaults are a starting point. Production needs a real database,
+      authentication and secrets.
+  correct_option: a
+  explanation: Correct. The framework supplies mechanisms, but the organization decides
+    the policy and runs the deployment.
+- id: ats070-final-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain configuration merging and typed consumption
+  source_readings:
+  - sections/section-020/README.md
+  prompt: Two config files are loaded with `--config a.yaml --config b.yaml` and both
+    set `app.title`. Which value does the running application use?
+  options:
+  - id: a
+    text: The value from `a.yaml`, because it was loaded first.
+    explanation: Files given later have higher priority.
+  - id: b
+    text: The value from `b.yaml`, because the last file has the highest priority.
+    explanation: Correct. Primitive values are replaced by the file with higher priority.
+  - id: c
+    text: The application refuses to start because of the conflict.
+    explanation: A conflict is not an error. Merging is defined.
+  - id: d
+    text: Both values joined into one string.
+    explanation: Primitives are replaced, not joined.
+  correct_option: b
+  explanation: Correct. Primitive values are replaced by the file with higher priority.
+- id: ats070-final-q04
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Reason about overrides, arrays and environment-dependent configuration
+  source_readings:
+  - sections/section-020/README.md
+  prompt: A base file lists three entries under `catalog.locations`. An override file
+    lists one. What does the merged configuration contain?
+  options:
+  - id: a
+    text: Four entries, joined.
+    explanation: Arrays are not joined.
+  - id: b
+    text: Three entries, because the base file wins.
+    explanation: The override has higher priority.
+  - id: c
+    text: One entry, because arrays are replaced as a whole.
+    explanation: Correct. Objects merge deeply, but an array in a higher-priority
+      source replaces the whole array.
+  - id: d
+    text: Three entries with the first one changed.
+    explanation: Arrays are not merged item by item.
+  correct_option: c
+  explanation: Correct. Objects merge deeply, but an array in a higher-priority source
+    replaces the whole array.
+- id: ats070-final-q05
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Distinguish browser-visible settings from backend-only values
+  source_readings:
+  - sections/section-030/README.md
+  prompt: Which statement about configuration visibility is correct?
+  options:
+  - id: a
+    text: Every value in `app-config.yaml` is sent to the browser.
+    explanation: Only values declared with frontend visibility reach the browser.
+  - id: b
+    text: A value marked secret must never be sent to the browser and is hidden from
+      the frontend configuration.
+    explanation: Correct. Secret and backend values stay on the server, and the visibility
+      annotation controls what the frontend receives.
+  - id: c
+    text: Visibility depends on the file name of the configuration file.
+    explanation: Visibility comes from the configuration schema, not from file names.
+  - id: d
+    text: Environment variables are always visible in the browser.
+    explanation: Environment values follow the same schema rules as file values.
+  correct_option: b
+  explanation: Correct. Secret and backend values stay on the server, and the visibility
+    annotation controls what the frontend receives.
+- id: ats070-final-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Identify the application, database and integration dependencies
+    of a deployment
+  source_readings:
+  - sections/section-030/README.md
+  prompt: Why should a production Backstage deployment not use the in-memory SQLite
+    database?
+  options:
+  - id: a
+    text: The data is lost when the process restarts, and replicas cannot share it.
+    explanation: Correct. An in-memory database lives inside one process.
+  - id: b
+    text: SQLite cannot store JSON.
+    explanation: The storage format is not the problem.
+  - id: c
+    text: Backstage forbids databases.
+    explanation: Backstage requires a database.
+  - id: d
+    text: Memory databases cannot be read by plugins.
+    explanation: Plugins can read it. The problem is persistence and sharing.
+  correct_option: a
+  explanation: Correct. An in-memory database lives inside one process.
+- id: ats070-final-q07
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Distinguish availability, readiness and functional feature health
+  source_readings:
+  - sections/section-030/README.md
+  prompt: A pod passes its readiness probe, but the catalog page shows no entities
+    because the database connection setting is wrong for one plugin. What does this
+    show?
+  options:
+  - id: a
+    text: Readiness proves every feature works.
+    explanation: Readiness shows that the process reports ready, not that each feature
+      returns correct data.
+  - id: b
+    text: A ready process can still have a failing feature, so feature health needs
+      its own check.
+    explanation: Correct. Process health and feature health are different signals.
+  - id: c
+    text: The Kubernetes Service is broken.
+    explanation: The Service routes traffic. It does not know about plugin data.
+  - id: d
+    text: The probe path must be wrong.
+    explanation: The probe can be right and a feature can still fail.
+  correct_option: b
+  explanation: Correct. Process health and feature health are different signals.
+- id: ats070-final-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain safe release, secret delivery and persistent-data responsibilities
+  source_readings:
+  - sections/section-040/README.md
+  prompt: How should a database password reach the Backstage container?
+  options:
+  - id: a
+    text: Written into the container image.
+    explanation: Image content is copied to every environment and registry.
+  - id: b
+    text: Committed in the ConfigMap with the rest of the configuration.
+    explanation: A ConfigMap is not meant for secret values.
+  - id: c
+    text: Injected at run time from a Kubernetes Secret, for example as an environment
+      variable referenced in the configuration.
+    explanation: Correct. The image and the configuration stay free of the value.
+  - id: d
+    text: Sent from the browser at login.
+    explanation: The backend needs it before any user connects.
+  correct_option: c
+  explanation: Correct. The image and the configuration stay free of the value.
+- id: ats070-final-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Trace a browser feature through its client API and backend route
+  source_readings:
+  - sections/section-040/README.md
+  prompt: A card in the browser shows data from an external system. Which path does
+    the request take?
+  options:
+  - id: a
+    text: The browser calls the external system with the integration credential.
+    explanation: The credential would reach the browser.
+  - id: b
+    text: The browser calls a frontend API client, which calls a backend plugin route,
+      which calls the external system.
+    explanation: Correct. The backend holds the credential and makes the privileged
+      call.
+  - id: c
+    text: The external system calls the browser directly.
+    explanation: The browser starts the request.
+  - id: d
+    text: The browser reads the database directly.
+    explanation: Only the backend connects to the database.
+  correct_option: b
+  explanation: Correct. The backend holds the credential and makes the privileged
+    call.
+- id: ats070-final-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Distinguish discovery, authentication and authorization responsibilities
+  source_readings:
+  - sections/section-040/README.md
+  prompt: Which sentence separates the three terms correctly?
+  options:
+  - id: a
+    text: Discovery finds where an API is, authentication proves who the caller is,
+      authorization decides what the caller may do.
+    explanation: Correct.
+  - id: b
+    text: Authentication finds the API address.
+    explanation: That is discovery.
+  - id: c
+    text: Authorization proves the caller's identity.
+    explanation: That is authentication.
+  - id: d
+    text: Discovery grants permissions to a user.
+    explanation: That is authorization.
+  correct_option: a
+  explanation: Correct.
+- id: ats070-final-q11
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Explain why privileged integrations belong behind server boundaries
+  source_readings:
+  - sections/section-010/README.md
+  prompt: A button restarts a service. The button is hidden for most users. Is the
+    restart protected?
+  options:
+  - id: a
+    text: Yes, because users cannot see the button.
+    explanation: A caller can send the backend request without the button.
+  - id: b
+    text: Only if the backend route enforces the permission decision on the server.
+    explanation: Correct. The server must check the caller and the target.
+  - id: c
+    text: Yes, because the frontend is compiled.
+    explanation: Compiled code runs in the browser and can be bypassed.
+  - id: d
+    text: No, nothing can protect a route.
+    explanation: A backend can authorize each request.
+  correct_option: b
+  explanation: Correct. The server must check the caller and the target.
+- id: ats070-final-q12
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain Backstage as an assembled developer portal framework
+  source_readings:
+  - sections/section-010/README.md
+  prompt: Which two packages form the core of a standard Backstage application repository?
+  options:
+  - id: a
+    text: The frontend app package and the backend package.
+    explanation: Correct. The app runs in the browser and the backend runs on a server.
+  - id: b
+    text: Only a single backend package.
+    explanation: The browser application is a separate package.
+  - id: c
+    text: A database package and a cache package.
+    explanation: They are services the backend uses, not the application packages.
+  - id: d
+    text: Two copies of the frontend.
+    explanation: The backend is not optional.
+  correct_option: a
+  explanation: Correct. The app runs in the browser and the backend runs on a server.
