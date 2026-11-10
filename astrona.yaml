@@ -68,7 +68,7 @@ modules:
     difficulty: intermediate
     estimated_duration: 20m
     topic: backstage-framework
-    task_kind: configure
+    task_kind: build
     tags:
     - backstage
     - app-config
@@ -112,7 +112,7 @@ modules:
     difficulty: intermediate
     estimated_duration: 25m
     topic: backstage-framework
-    task_kind: investigate
+    task_kind: build
     tags:
     - backstage
     - monorepo
@@ -145,7 +145,7 @@ modules:
     difficulty: advanced
     estimated_duration: 35m
     topic: backstage-framework
-    task_kind: fix
+    task_kind: troubleshooting
     tags:
     - backstage
     - app-config
@@ -233,7 +233,7 @@ modules:
     difficulty: intermediate
     estimated_duration: 20m
     topic: backstage-secrets
-    task_kind: fix
+    task_kind: troubleshooting
     tags:
     - backstage
     - secret
@@ -298,7 +298,7 @@ modules:
     difficulty: intermediate
     estimated_duration: 30m
     topic: backstage-deployment
-    task_kind: fix
+    task_kind: migration
     tags:
     - backstage
     - postgresql
@@ -341,7 +341,7 @@ modules:
     difficulty: intermediate
     estimated_duration: 30m
     topic: backstage-deployment
-    task_kind: fix
+    task_kind: build
     tags:
     - backstage
     - secret
@@ -428,7 +428,7 @@ modules:
     difficulty: intermediate
     estimated_duration: 20m
     topic: backstage-architecture
-    task_kind: fix
+    task_kind: build
     tags:
     - backstage
     - base-url
@@ -468,7 +468,7 @@ modules:
     difficulty: intermediate
     estimated_duration: 25m
     topic: backstage-security
-    task_kind: fix
+    task_kind: troubleshooting
     tags:
     - backstage
     - auth-policy
@@ -497,7 +497,7 @@ modules:
     difficulty: advanced
     estimated_duration: 35m
     topic: backstage-architecture
-    task_kind: fix
+    task_kind: build
     tags:
     - backstage
     - base-url
